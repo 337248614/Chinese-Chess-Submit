@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PC_chess.CSharp", "PC_chess.CSharp.csproj", "{4C3D3898-2B28-4809-B923-E4737ECB48C6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PC_chess.CSharp.Editor", "PC_chess.CSharp.Editor.csproj", "{48F4E7FB-0936-6D91-D8B8-956A9B97FD1A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4C3D3898-2B28-4809-B923-E4737ECB48C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C3D3898-2B28-4809-B923-E4737ECB48C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C3D3898-2B28-4809-B923-E4737ECB48C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C3D3898-2B28-4809-B923-E4737ECB48C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48F4E7FB-0936-6D91-D8B8-956A9B97FD1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48F4E7FB-0936-6D91-D8B8-956A9B97FD1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48F4E7FB-0936-6D91-D8B8-956A9B97FD1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48F4E7FB-0936-6D91-D8B8-956A9B97FD1A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
