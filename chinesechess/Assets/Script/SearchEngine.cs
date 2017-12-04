@@ -159,37 +159,7 @@ public class SearchEngine : MonoBehaviour {
 		return 0;//两个将都在返回0
 
 	}
-	public int Falphabeta(int depth,int alpha,int beta){
-		int type;
-		int score;
-		int Count, i;
-		int current = -20000;
-		i = IsGameOver (Curposition, depth);
-		if (i != 0)
-			return i;
-		if (depth <= 0)
-			return Eveluate (Curposition, (m_nMaxDepth - depth) % 2 != 0);
-		Count = m.CreatePossibleMove (Curposition, depth, (m_nMaxDepth - depth) % 2 != 0);
-			for(i=0;i<Count;i++){
-			//Blackmove.CHESSMOVE a = m.m_MoveList[depth,i];
-				type=MakeMove(m.m_MoveList[depth,i]);
-				score = -Falphabeta(depth-1,-beta,-alpha);
-			//Debug.Log("当前搜索层数是"+m_nSearchDepth+"层 "+board.chess[a.From.y,a.From.x]+"   "+a.From.x+","+a.From.y+"--"+a.To.x+","+a.To.y+":"+score);
-				UnMakeMove(m.m_MoveList[depth,i],type);
-				if(score>current){
-					current = score;
-				if(depth==m_nMaxDepth)
-					m_cmBestMove = m.m_MoveList[depth,i];
-					if(score>=alpha)
-						alpha = score;
-					if(score>=beta)
-						break;
-				}
-		
-			}
-		//CeShi+="\n";
-		return current;
-		}
+
 		//极小窗口算法
 	//blackclick bl = new blackclick();
 //	IEnumerator Robot(){
@@ -244,13 +214,7 @@ public class SearchEngine : MonoBehaviour {
 		for (int i=0; i<position.GetLength(0); i++)
 			for (int j=0; j<position.GetLength(1); j++)
 				Curposition [i, j] = position [i, j];
-		/*string str = "";
-		for(int c =0;c< Curposition.GetLength(0);c++){
-			for(int d=0;d<Curposition.GetLength(1);d++)
-				str+=Curposition[c,d];
-			str+="\n";
-		}
-		print (str);*/
+		
 		//先进行浅层搜索，猜测目标值范围
 		//极小窗口算法
 		PrincipalVariation (m_nMaxDepth, -20000, 20000);
@@ -271,50 +235,7 @@ public class SearchEngine : MonoBehaviour {
 		blackclick.posthread = true;//线程的内容已经全部执行完毕
 		  return m_cmBestMove ;
 	}
-	//负极大值函数
-	//depth表示节点离叶子节点的层数
 
-	int NegaMax(int depth){
-		int current = -20000;
-		int score;
-		int Count, i;
-		int type;
-		i = IsGameOver (Curposition, depth);//检查棋局是否结束
-		if (i != 0)
-			return i;//棋局没有结束，返回极大极小值
-		if (depth <= 0)
-			return Eveluate (Curposition,((m_nMaxDepth - depth) % 2) != 0);//
-		//返回估值
-		//列举出当前局面下一步所有可能的走法
-		Count = m.CreatePossibleMove (Curposition, depth,((m_nMaxDepth - depth) % 2) != 0 );//
-		for (i=0; i<Count; i++) {
-			Blackmove.CHESSMOVE a = m.m_MoveList[depth,i];
-		//根据走法产生新局面
-			type = MakeMove(a);
-
-			//print (a.From.x+","+a.From.y+"--"+a.To.x+","+a.To.y);
-
-	//递归调用负极大值搜索下一层节点
-			score = -NegaMax(depth-1); 
-			//Debug.Log("当前搜索层数是"+m_nSearchDepth+"层 "+board.chess[a.From.y,a.From.x]+"   "+a.From.x+","+a.From.y+"--"+a.To.x+","+a.To.y+":"+score);
-			//恢复当前局面
-			UnMakeMove(m.m_MoveList[depth,i],type);
-			if(score>current){//如果score大于一直的最大值
-				current = score;
-				if(depth==m_nMaxDepth){
-					//靠近根部保存最佳走法
-					m_cmBestMove = m.m_MoveList[depth,i];
-				}
-			}
-		}
-		return current;//返回极大值
-	}
-	//伪代码，alpha-beta算法
-
-	////-********************************-----------------------------------------------
-	/// 估值核心
-	/// 
-	/// 
 	
 	//为每一个兵返回附加值
 	//x是横，y纵，cursituation棋盘

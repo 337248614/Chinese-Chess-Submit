@@ -18,17 +18,6 @@ public class blackclick : MonoBehaviour {
 	Canmovetishi can = new Canmovetishi();
     ChessChongzhi  chzh = new ChessChongzhi();
     SearchEngine see = new SearchEngine();
-// Use this for initialization
-	//控制窗口，不让窗口乱动
-
-	void Start () {
-        
-        
-       
-        
-	}
-	
-	// Update is called once per frame
 	
 	//得到点击的象棋名字
 	//判断点击到的是什么？
@@ -123,8 +112,11 @@ public class blackclick : MonoBehaviour {
 					RedName = null;
 					return;
 				}
-				if (ChessMove == false)
-                    threm();
+                if (ChessMove == false) {
+                    //threm();
+                    //StartCoroutine(Robost());
+                    Invoke("threm", 0.2f);
+                }
 			//执行走棋
 
 			}
@@ -195,9 +187,11 @@ public class blackclick : MonoBehaviour {
 					BlackName=null;
 					return;
 				}
-				if (ChessMove == false)
-                    threm();
-			}
+                if (ChessMove == false) { 
+                    //threm();
+                    Invoke("threm", 0.2f);
+                }
+            }
 			break;
 		case 2://点击到了红色   是否选中  还是黑色要吃子
 			if(posthread ==false)
@@ -244,62 +238,58 @@ public class blackclick : MonoBehaviour {
 		}
 	
 	}
-    //IEnumerator Robot()
-    //{
-    //    yield return new WaitForSeconds (0.2f);
-    //    threm();
-    //    //posthread = false;
-    //    //Thread th = new Thread (new ThreadStart (threm));
-    //    //th.Start ();
-    //}
 	public void threm(){
 		//str="对方正在思考";
-		if (ChessMove == false) {
-			//print("yes");
-			//ChessChongzhi chzh = new ChessChongzhi();
-			//SearchEngine see = new SearchEngine();
-			//Blackmove mo = new Blackmove();
-			chere = see.SearchAGoodMove(board.chess);
-				string s1 = "";
-				string s2 = "";
-				string s3 = "";
-				string s4 = "";
-				s1 = see.Itemfirname (chere);
-				s2 = see.Itemsconname (chere);
-			//print(s1+"  "+s2);
-				GameObject one = GameObject.Find (s1);
-				GameObject two = GameObject.Find (s2);
-				foreach (Transform child in one.transform)
-					s3 = child.name;//第一个象棋名字
-				foreach (Transform child in two.transform)
-					s4 = child.name;//吃到的子的象棋名字
+        if (ChessMove == false)
+        {
+            print("yes");
+            ChessChongzhi chzh = new ChessChongzhi();
+            SearchEngine see = new SearchEngine();
+            Blackmove mo = new Blackmove();
+            chere = see.SearchAGoodMove(board.chess);
+            Debug.Log(chere.ChessID + "<>" + chere.From + "<>" + chere.To + "<>" + chere.Score);
+            string s1 = "";
+            string s2 = "";
+            string s3 = "";
+            string s4 = "";
+            s1 = see.Itemfirname(chere);
+            s2 = see.Itemsconname(chere);
+            GameObject one = GameObject.Find(s1);
+            GameObject two = GameObject.Find(s2);
+            foreach (Transform child in one.transform)
+                s3 = child.name;//第一个象棋名字
+            foreach (Transform child in two.transform)
+                s4 = child.name;//吃到的子的象棋名字
 
             //将AI走的这一步加入棋走的每一步列表
-				if (s4 == "") {
-					int a = board.chess [chere.From.y, chere.From.x];
-					int b = board.chess [chere.To.y, chere.To.x];
-					chzh.AddChess (ChessChongzhi.Count, chere.From.x, chere.From.y, chere.To.x, chere.To.y, false, a, b);
-					IsMove (s3, two, chere.From.x, chere.From.y, chere.To.x, chere.To.y);
-					renji.transform.localPosition = one.transform.localPosition;
+            if (s4 == "")
+            {
+                int a = board.chess[chere.From.y, chere.From.x];
+                int b = board.chess[chere.To.y, chere.To.x];
+                chzh.AddChess(ChessChongzhi.Count, chere.From.x, chere.From.y, chere.To.x, chere.To.y, false, a, b);
+                IsMove(s3, two, chere.From.x, chere.From.y, chere.To.x, chere.To.y);
+                renji.transform.localPosition = one.transform.localPosition;
 
-				} else {
-					int a = board.chess [chere.From.y, chere.From.x];
-					int b = board.chess [chere.To.y, chere.To.x];
-					chzh.AddChess (ChessChongzhi.Count, chere.From.x, chere.From.y, chere.To.x, chere.To.y, false, a, b);
-					IsEat (s3, s4, chere.From.x, chere.From.y, chere.To.x, chere.To.y);
-					renji.transform.localPosition = one.transform.localPosition;
+            }
+            else
+            {
+                int a = board.chess[chere.From.y, chere.From.x];
+                int b = board.chess[chere.To.y, chere.To.x];
+                chzh.AddChess(ChessChongzhi.Count, chere.From.x, chere.From.y, chere.To.x, chere.To.y, false, a, b);
+                IsEat(s3, s4, chere.From.x, chere.From.y, chere.To.x, chere.To.y);
+                renji.transform.localPosition = one.transform.localPosition;
 
-				}
-		
-				RedName = null;
-				BlackName = null;
-				GameObject obj1 = GameObject.Find (s3);
-				tog = obj1.GetComponent<UIToggle> ();
-				tog.value = true;
-				str = "红方走";
-				KingPosition.JiangJunCheck ();
-				ChessMove = true;
-			}
+            }
+
+            RedName = null;
+            BlackName = null;
+            GameObject obj1 = GameObject.Find(s3);
+            tog = obj1.GetComponent<UIToggle>();
+            tog.value = true;
+            str = "红方走";
+            KingPosition.JiangJunCheck();
+            ChessMove = true;
+        }
 
 		}
 

@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.SceneManagement;
 
 public class yemiantiaozhuang : MonoBehaviour {
-	public static int ChessPeople;//判断当前是人人象棋 还是人机
+	public static int ChessPeople=1;//判断当前是人人象棋 还是人机
 	// Use this for initialization
 	public GameObject BtnPosition;
     public GameObject difficultselect;
