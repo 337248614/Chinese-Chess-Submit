@@ -83,41 +83,16 @@ public class SearchEngine  :MonoBehaviour{
 	/// //知道坐标得到item名字
 	//
 
-	GameObject obj;
 
     void Start()
     {
         instance = this;
     }
-    public string Itemsconname(MoveSetting.CHESSMOVE move)
-    {//得到点击目标位置gameobject的对象名字
-
-		string s3="";
-		for (int i=1; i<=90; i++) {
-			obj = GameObject.Find("item"+i.ToString());
-			int x=System.Convert.ToInt32((obj.transform.localPosition.x)/43);
-			int y = System.Convert.ToInt32(Mathf.Abs((obj.transform.localPosition.y)/43));
-			if(x==move.To.x&&y==move.To.y)
-				s3=obj.name;
-		}
-		return s3;
-	}
-    public string Itemfirname(MoveSetting.CHESSMOVE move)
-    {//得到开始位置gameobject的对象名字
-		string s3="";
-		for (int i=1; i<=90; i++) {
-			obj = GameObject.Find("item"+i.ToString());
-			int x=System.Convert.ToInt32((obj.transform.localPosition.x)/43);
-			int y = System.Convert.ToInt32(Mathf.Abs((obj.transform.localPosition.y)/43));
-			if(x==move.From.x&&y==move.From.y)
-				s3=obj.name;
-		}
-		return s3;
-	}
+    
 	//根据传入的走法                                  改变棋盘
 	//move是要进行的走法
 	//public int[,] CurPosition = new int[10, 9]; 
-    public int MakeMove(MoveSetting.CHESSMOVE move)
+    int MakeMove(MoveSetting.CHESSMOVE move)
     {
 		int nChessID;
 		nChessID = Curposition [move.To.y, move.To.x];//取目标棋子

@@ -23,8 +23,11 @@ public class ChessControl : MonoBehaviour {
     {
         instance = this;
     }
-	public int IsBlackOrRed(int x,int y){
-        int Count = board.instance.chess[y, x];
+
+    //判断某个位置是黑方还是红方
+    int IsBlackOrRed(int Posx, int Posy)
+    {
+        int Count = board.instance.chess[Posy, Posx];
 		if (Count == 0)
 			return 0;
 		else if (Count > 0 && Count < 8)//是黑色
@@ -32,49 +35,51 @@ public class ChessControl : MonoBehaviour {
 		else  //是红色 
 			return 2;
 	}
-	public void BlackNameOrRedName(GameObject obj){//得到棋子的名字
-	if (obj.name.Substring (0, 1) == "r")
-			RedName = obj.name;//得到red名字
-		else if (obj.name.Substring (0, 1) == "b")
-			BlackName = obj.name;//得到black名字
-		else 
-			ItemName = obj.name;//得到item名字
+
+    //得到点击的棋子的名字
+	void BlackNameOrRedName(GameObject ClickItem)
+    {
+        if (ClickItem.name.Substring(0, 1) == "r")
+            RedName = ClickItem.name;//得到red名字
+        else if (ClickItem.name.Substring(0, 1) == "b")
+            BlackName = ClickItem.name;//得到black名字
+		else
+            ItemName = ClickItem.name;//得到item名字
 	}
 	//移动
-	public void IsMove(string One,GameObject game ,int x1,int y1,int x2,int y2){
-	    GameObject parent1 = GameObject.Find (One);
-		parent1.transform.SetParent(game.transform);
-		parent1.transform.localPosition = Vector3.zero;
-        board.instance.chess[y2, x2] = board.instance.chess[y1, x1];
-        board.instance.chess[y1, x1] = 0;
+    void IsMove(GameObject FromPosObj, GameObject ToPosObj, int FromX, int FromY, int ToX, int ToY)
+    {
+        FromPosObj.transform.SetParent(ToPosObj.transform);
+        FromPosObj.transform.localPosition = Vector3.zero;
+        board.instance.chess[ToY, ToX] = board.instance.chess[FromY, FromX];
+        board.instance.chess[FromY, FromX] = 0;
 	}
 	//吃子
-	public void IsEat(string Frist,string sconde,int x1,int y1,int x2,int y2)
+    void IsEat(GameObject FromPosObj, GameObject ToPosObj, int FromX, int FromY, int ToX, int ToY)
     {
-	    GameObject Onename = GameObject.Find (Frist);//得到第一个
-		GameObject Twoname = GameObject.Find (sconde);//得到第二个名字
-		GameObject Twofather = Twoname.gameObject.transform.parent.gameObject;//得到第二个的父亲
-		Onename.gameObject.transform.SetParent(Twofather.transform);
-		Onename.transform.localPosition = Vector3.zero;
-        board.instance.chess[y2, x2] = board.instance.chess[y1, x1];
-        board.instance.chess[y1, x1] = 0;
+
+        GameObject ToPosObjfather = ToPosObj.gameObject.transform.parent.gameObject;//得到第二个的父亲
+        FromPosObj.gameObject.transform.SetParent(ToPosObjfather.transform);
+        FromPosObj.transform.localPosition = Vector3.zero;
+        board.instance.chess[ToY, ToX] = board.instance.chess[FromY, FromX];
+        board.instance.chess[FromY, FromX] = 0;
         GameObject a = GameObject.Find("xiaoshi");
-        Twoname.transform.SetParent(a.transform);
-		Twoname.transform.localPosition = new Vector3(5000,5000,0);
+        ToPosObj.transform.SetParent(a.transform);
+        ToPosObj.transform.localPosition = new Vector3(5000, 5000, 0);
 	}
 	//用来悔棋功能
 	//点击事件
 	//播放音乐
-    public void IsClickCheck(GameObject obj)
+    public void IsClickCheck(GameObject ClickItem)
     {
         renji = GameObject.Find("chessRobot");
 		if (TrueOrFalse == false)
-			return;       
-		BlackNameOrRedName (obj);//是否点击到棋子  如果是  就得到棋子
-		if (obj.name.Substring (0, 1) != "i")
-			obj = obj.gameObject.transform.parent.gameObject;//得到他的父容器
-		int x=System.Convert.ToInt32((obj.transform.localPosition.x)/43);
-		int y = System.Convert.ToInt32(Mathf.Abs((obj.transform.localPosition.y)/43));
+			return;
+        BlackNameOrRedName(ClickItem);//是否点击到棋子  如果是  就得到棋子
+        if (ClickItem.name.Substring(0, 1) != "i")
+            ClickItem = ClickItem.gameObject.transform.parent.gameObject;//得到他的父容器
+        int x = System.Convert.ToInt32((ClickItem.transform.localPosition.x) / 43);
+        int y = System.Convert.ToInt32(Mathf.Abs((ClickItem.transform.localPosition.y) / 43));
 		int Result = IsBlackOrRed (x, y);//判断点击到了什么
 		switch (Result) {
 		case 0://点击到了空  是否要走棋
@@ -100,7 +105,8 @@ public class ChessControl : MonoBehaviour {
             int a = board.instance.chess[FromY, FromX];
             int b = board.instance.chess[ToY, ToX];
                 BackStepChess.instance.AddChess(BackStepChess.Count, FromX, FromY, ToX, ToY, true, a, b);
-				IsMove(RedName,obj,FromX,FromY,ToX,ToY);//走了
+                GameObject RedPiece = GameObject.Find(RedName);
+                IsMove(RedPiece, ClickItem, FromX, FromY, ToX, ToY);//走了
                 NextPlayerTipStr = "黑方走";
 				KingPosition.JiangJunCheck();
 				ChessMove = false;
@@ -129,7 +135,8 @@ public class ChessControl : MonoBehaviour {
                 int b = board.instance.chess[ToY, ToX];
                 BackStepChess.instance.AddChess(BackStepChess.Count, FromX, FromY, ToX, ToY, true, a, b);
 				//看看是否能播放音乐
-				IsMove(BlackName,obj,FromX,FromY,ToX,ToY);
+                GameObject BlackPiece = GameObject.Find(BlackName);
+                IsMove(BlackPiece, ClickItem, FromX, FromY, ToX, ToY);
 			
 				//黑色走棋
 				ChessMove = true;
@@ -147,7 +154,7 @@ public class ChessControl : MonoBehaviour {
                 {
                     BlackSelectChess.GetChild(0).gameObject.SetActive(false);
                 }
-                BlackSelectChess = obj.transform.GetChild(0);
+                BlackSelectChess = ClickItem.transform.GetChild(0);
                 BlackSelectChess.GetChild(0).gameObject.SetActive(true);
 				for(int i=1;i<=90;i++)
 				{
@@ -173,7 +180,9 @@ public class ChessControl : MonoBehaviour {
                 int b = board.instance.chess[ToY, ToX];
                 BackStepChess.instance.AddChess(BackStepChess.Count, FromX, FromY, ToX, ToY, true, a, b);
 				//看看是否能播放音乐
-				IsEat(RedName,BlackName,FromX,FromY,ToX,ToY);
+                GameObject RedPiece = GameObject.Find(RedName);
+                GameObject BlackPiece = GameObject.Find(BlackName);
+                IsEat(RedPiece, BlackPiece, FromX, FromY, ToX, ToY);
 				ChessMove = false;
 				//红色吃子  变黑色走
                 NextPlayerTipStr = "黑方走";
@@ -199,7 +208,7 @@ public class ChessControl : MonoBehaviour {
             {
                 RedSelectChess.GetChild(0).gameObject.SetActive(false);
             }
-            RedSelectChess = obj.transform.GetChild(0);
+            RedSelectChess = ClickItem.transform.GetChild(0);
             RedSelectChess.GetChild(0).gameObject.SetActive(true);
 			if(ChessMove){
 				FromX=x;
@@ -229,8 +238,9 @@ public class ChessControl : MonoBehaviour {
                 int b = board.instance.chess[ToY, ToX];
                 BackStepChess.instance.AddChess(BackStepChess.Count, FromX, FromY, ToX, ToY, true, a, b);
 				//看看是否能播放音乐
-				IsEat(BlackName,RedName,FromX,FromY,ToX,ToY);
-                
+                GameObject RedPiece = GameObject.Find(RedName);
+                GameObject BlackPiece = GameObject.Find(BlackName);
+                IsEat(BlackPiece, RedPiece, FromX, FromY, ToX, ToY);                
 				RedName = null;
 				BlackName = null;
 				ChessMove = true;
@@ -242,9 +252,9 @@ public class ChessControl : MonoBehaviour {
 		}
 	
 	}
-	public void threm(){
-		//str="对方正在思考";
 
+    //调用AI进行下一步棋的计算并且进行界面的修改
+	void threm(){
         if (ChessMove == false)
         {
 
@@ -253,8 +263,8 @@ public class ChessControl : MonoBehaviour {
             string s2 = "";
             string s3 = "";
             string s4 = "";
-            s1 = SearchEngine.instance.Itemfirname(chere);
-            s2 = SearchEngine.instance.Itemsconname(chere);
+            s1 = GetFromPositionObjName(chere);
+            s2 = GetToPositionObjName(chere);
             GameObject one = GameObject.Find(s1);
             GameObject two = GameObject.Find(s2);
             foreach (Transform child in one.transform)
@@ -268,7 +278,8 @@ public class ChessControl : MonoBehaviour {
                 int a = board.instance.chess[chere.From.y, chere.From.x];
                 int b = board.instance.chess[chere.To.y, chere.To.x];
                 BackStepChess.instance.AddChess(BackStepChess.Count, chere.From.x, chere.From.y, chere.To.x, chere.To.y, false, a, b);
-                IsMove(s3, two, chere.From.x, chere.From.y, chere.To.x, chere.To.y);
+                GameObject SelectPiece = GameObject.Find(s3);
+                IsMove(SelectPiece, two, chere.From.x, chere.From.y, chere.To.x, chere.To.y);//走了
                 renji.transform.localPosition = one.transform.localPosition;
 
             }
@@ -277,7 +288,9 @@ public class ChessControl : MonoBehaviour {
                 int a = board.instance.chess[chere.From.y, chere.From.x];
                 int b = board.instance.chess[chere.To.y, chere.To.x];
                 BackStepChess.instance.AddChess(BackStepChess.Count, chere.From.x, chere.From.y, chere.To.x, chere.To.y, false, a, b);
-                IsEat(s3, s4, chere.From.x, chere.From.y, chere.To.x, chere.To.y);
+                GameObject BlackPiece = GameObject.Find(s3);
+                GameObject RedPiece = GameObject.Find(s4);
+                IsEat(BlackPiece, RedPiece, chere.From.x, chere.From.y, chere.To.x, chere.To.y);
                 renji.transform.localPosition = one.transform.localPosition;
 
             }
@@ -295,6 +308,37 @@ public class ChessControl : MonoBehaviour {
             ChessMove = true;
         }
 
-		}
+	}
+    //得到一步棋目标位置gameobject的对象名字
+    string GetToPositionObjName(MoveSetting.CHESSMOVE move)
+    {
+
+        string s3 = "";
+        for (int i = 1; i <= 90; i++)
+        {
+            GameObject obj = GameObject.Find("item" + i.ToString());
+            int x = System.Convert.ToInt32((obj.transform.localPosition.x) / 43);
+            int y = System.Convert.ToInt32(Mathf.Abs((obj.transform.localPosition.y) / 43));
+            if (x == move.To.x && y == move.To.y)
+                s3 = obj.name;
+        }
+        return s3;
+    }
+
+    //得到一步棋开始位置gameobject的对象名字
+    string GetFromPositionObjName(MoveSetting.CHESSMOVE move)
+    {
+        
+        string s3 = "";
+        for (int i = 1; i <= 90; i++)
+        {
+            GameObject obj = GameObject.Find("item" + i.ToString());
+            int x = System.Convert.ToInt32((obj.transform.localPosition.x) / 43);
+            int y = System.Convert.ToInt32(Mathf.Abs((obj.transform.localPosition.y) / 43));
+            if (x == move.From.x && y == move.From.y)
+                s3 = obj.name;
+        }
+        return s3;
+    }
 
 }

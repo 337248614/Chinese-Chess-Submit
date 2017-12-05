@@ -54,7 +54,7 @@ public class BackStepChess :MonoBehaviour{
 		Count++;
 	}
 	//得到第一个旗子名字
-	public GameObject chessOne(GameObject obj)
+	GameObject chessOne(GameObject obj)
     {
 		string s = "";
 		GameObject game = null;
@@ -64,7 +64,7 @@ public class BackStepChess :MonoBehaviour{
 		return game;
 	}
 	//得到第二个旗子名字
-	public GameObject ChessTwo(GameObject obj)
+	GameObject ChessTwo(GameObject obj)
     {
 		string s = "";
 		GameObject game = null;
@@ -75,7 +75,7 @@ public class BackStepChess :MonoBehaviour{
 	}
 	//得到第二个旗子名字
 	//得到第二个对象名字
-	public GameObject ItemTow(int fromx,int fromy,int tox,int toy)
+	GameObject ItemTow(int fromx,int fromy,int tox,int toy)
     {//得到点击目标位置gameobject的对象名字
 		GameObject obj;
 		string s3="";
@@ -90,7 +90,7 @@ public class BackStepChess :MonoBehaviour{
 		return obj;
 	}
 	//得到第一个对象名字
-	public GameObject ItemOne(int fromx,int fromy,int tox,int toy)
+	GameObject ItemOne(int fromx,int fromy,int tox,int toy)
     {//得到开始位置gameobject的对象名字
 		GameObject obj;
 		string s3="";
