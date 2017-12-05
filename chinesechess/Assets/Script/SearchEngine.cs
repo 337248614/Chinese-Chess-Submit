@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SearchEngine : MonoBehaviour {
+public class SearchEngine  :MonoBehaviour{
+
+    public static SearchEngine instance; 
 	public int [,]Curposition = new int[10, 9];
 	public int NOCHESS = 0;
 	public int m_nMaxDepth;
@@ -23,12 +25,11 @@ public class SearchEngine : MonoBehaviour {
     public int[,] chessValue = new int[10, 9];
     //记录棋子的相关位置个数
     public int nPosCount;
-    //记录一个棋子相关位置的数组
-    public MoveSetting.CHESSMANPOS[] RelatePos = new MoveSetting.CHESSMANPOS[30];
+    
     //用来统计调用了估值函数的也子节点次数
     public int count = 0;
     //实例化
-    MoveSetting bl = new MoveSetting();
+
     //红兵的附加值数组
     public int[,] BA0 = new int [10,9]
 	{
@@ -81,16 +82,21 @@ public class SearchEngine : MonoBehaviour {
 	///////////////////////////////////////////
 	/// //知道坐标得到item名字
 	//
-    MoveSetting m = new MoveSetting();
+
 	GameObject obj;
+
+    void Start()
+    {
+        instance = this;
+    }
     public string Itemsconname(MoveSetting.CHESSMOVE move)
     {//得到点击目标位置gameobject的对象名字
 
 		string s3="";
 		for (int i=1; i<=90; i++) {
 			obj = GameObject.Find("item"+i.ToString());
-			int x=System.Convert.ToInt32((obj.transform.localPosition.x)/112);
-			int y = System.Convert.ToInt32(Mathf.Abs((obj.transform.localPosition.y)/112));
+			int x=System.Convert.ToInt32((obj.transform.localPosition.x)/43);
+			int y = System.Convert.ToInt32(Mathf.Abs((obj.transform.localPosition.y)/43));
 			if(x==move.To.x&&y==move.To.y)
 				s3=obj.name;
 		}
@@ -101,8 +107,8 @@ public class SearchEngine : MonoBehaviour {
 		string s3="";
 		for (int i=1; i<=90; i++) {
 			obj = GameObject.Find("item"+i.ToString());
-			int x=System.Convert.ToInt32((obj.transform.localPosition.x)/112);
-			int y = System.Convert.ToInt32(Mathf.Abs((obj.transform.localPosition.y)/112));
+			int x=System.Convert.ToInt32((obj.transform.localPosition.x)/43);
+			int y = System.Convert.ToInt32(Mathf.Abs((obj.transform.localPosition.y)/43));
 			if(x==move.From.x&&y==move.From.y)
 				s3=obj.name;
 		}
@@ -176,12 +182,12 @@ public class SearchEngine : MonoBehaviour {
 			return i;
 		if (depth <= 0)
 			return Eveluate (Curposition, (m_nMaxDepth - depth) % 2 != 0);
-		Count = m.CreatePossibleMove (Curposition, depth, (m_nMaxDepth - depth) % 2 != 0);
-		type=MakeMove(m.m_MoveList[depth,0]);
+        Count = MoveSetting.instance.CreatePossibleMove(Curposition, depth, (m_nMaxDepth - depth) % 2 != 0);
+        type = MakeMove(MoveSetting.instance.m_MoveList[depth, 0]);
 		best = -PrincipalVariation (depth - 1, -beta, -alpha);
-		UnMakeMove(m.m_MoveList[depth,0],type);
+		UnMakeMove(MoveSetting.instance.m_MoveList[depth,0],type);
 		if (depth == m_nMaxDepth)
-			m_cmBestMove = m.m_MoveList [depth, i];
+            m_cmBestMove = MoveSetting.instance.m_MoveList[depth, i];
 		for (i=1; i<Count; i++) {
 		//	StartCoroutine(Robot);
 			if(best<beta){
@@ -189,19 +195,19 @@ public class SearchEngine : MonoBehaviour {
 				if(best<beta)
 					if(best>alpha)
 						alpha=best;
-					type = MakeMove(m.m_MoveList[depth,i]);
+                type = MakeMove(MoveSetting.instance.m_MoveList[depth, i]);
 					score = -PrincipalVariation(depth-1,-alpha-1,-alpha);
 					if(score>alpha&&score<beta){
 						best = -PrincipalVariation(depth-1,-beta,-score);
 						if(depth==m_nMaxDepth)
-							m_cmBestMove = m.m_MoveList[depth,i];
+                            m_cmBestMove = MoveSetting.instance.m_MoveList[depth, i];
 					}
 					else if(score>best){
 						best=score;
 						if(depth==m_nMaxDepth)
-							m_cmBestMove = m.m_MoveList[depth,i];
+                            m_cmBestMove = MoveSetting.instance.m_MoveList[depth, i];
 					}
-					UnMakeMove(m.m_MoveList[depth,i],type);
+                    UnMakeMove(MoveSetting.instance.m_MoveList[depth, i], type);
 			}
 		}
 		return best;
@@ -259,21 +265,21 @@ public class SearchEngine : MonoBehaviour {
 				for (k =0;k<nPosCount;k++)//对每一目标位置
 				{
 					//取目标位置棋子类型
-					nTargetType = position [RelatePos [k].y,RelatePos [k].x];
+                    nTargetType = position[MoveSetting.instance.RelatePos[k].y, MoveSetting.instance.RelatePos[k].x];
 					if (nTargetType == 0 )//如果是空白
 						FlexibilityPos [i,j]++;//灵活性增加
 					else
 					{
 						//是棋子
-						if (bl.IsSameSide (nChessType ,nTargetType ))
+                        if (MoveSetting.instance.IsSameSide(nChessType, nTargetType))
 						{
 							//如果是己方棋子，目标受到保护
-							GuardPos [RelatePos [k].y ,RelatePos [k].x]++;
+                            GuardPos[MoveSetting.instance.RelatePos[k].y, MoveSetting.instance.RelatePos[k].x]++;
 						}
 						else 
 						{
 							//如果是敌方棋子，目标受到威胁
-							AttackPos [RelatePos [k].y,RelatePos [k].x]++;
+                            AttackPos[MoveSetting.instance.RelatePos[k].y, MoveSetting.instance.RelatePos[k].x]++;
 							FlexibilityPos [i,j]++;//灵活性增加
 							//string sss = "";
 							switch (nTargetType)
@@ -290,7 +296,7 @@ public class SearchEngine : MonoBehaviour {
 							default ://不是将的其他棋子
 								//根据威胁的棋子加上威胁分值
 							{
-								AttackPos [RelatePos[k].y,RelatePos [k].x]+=(30+(BaseValue [nTargetType]-BaseValue [nChessType])/10)/10;							
+                                AttackPos[MoveSetting.instance.RelatePos[k].y, MoveSetting.instance.RelatePos[k].x] += (30 + (BaseValue[nTargetType] - BaseValue[nChessType]) / 10) / 10;							
 								break ;
 							}
 							
@@ -329,7 +335,7 @@ public class SearchEngine : MonoBehaviour {
 				nHalfvalue = BaseValue [nChessType]/16;
 				//把每个棋子的基本价值介入其总价值
 				chessValue [i,j]+=BaseValue [nChessType ];
-				if (bl.IsRed (nChessType ))//如果是红旗
+                if (MoveSetting.instance.IsRed(nChessType))//如果是红旗
 				{
 					if (AttackPos [i,j]!=0)//当前红棋如果被威胁
 					{
@@ -411,7 +417,7 @@ public class SearchEngine : MonoBehaviour {
 			nChessType = position [i,j];
 			if (nChessType !=0 )//如果不是空白
 			{
-				if(bl.IsRed (nChessType ))  //如果是红旗
+                if (MoveSetting.instance.IsRed(nChessType))  //如果是红旗
 					nRedValue +=chessValue [i,j];//将这格棋子的价值加入到红旗价值当中
 				else
 					nBlackValue += chessValue [i,j];
@@ -892,8 +898,8 @@ public class SearchEngine : MonoBehaviour {
 	//将一个位置加入相关队列
 	void AddPoint(int x,int y){
 		//这个函数将一个位置加入数组relatepas中
-		RelatePos [nPosCount].x = x;
-		RelatePos [nPosCount].y = y;
+        MoveSetting.instance.RelatePos[nPosCount].x = x;
+        MoveSetting.instance.RelatePos[nPosCount].y = y;
 		nPosCount++;
 	}
 	
