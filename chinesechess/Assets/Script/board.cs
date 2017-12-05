@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class board : MonoBehaviour {
 	//public static ArrayList All;
     public static board instance;
-	public UILabel sprite1;
-	public static string s="简单";
-	public static string sss1="";
+    public Text DiffcultLevelText;
+    public static string DiffcultLevelStr = "简单";
 	public static int[,]chess = new int[10, 9]{
 	
 		{2,3,6,5,1,5,6,3,2},
@@ -25,11 +25,12 @@ public class board : MonoBehaviour {
 	void Start () {
         instance = this;
 		GameObject obj = GameObject.Find("newnandu");
-		sprite1 = obj.GetComponent<UILabel> ();
+        DiffcultLevelText = obj.GetComponent<Text>();
 	}
 	
     //动态添加了90个棋盘的格子 并且给它们位置等信息
-    public	void text(){                                  
+    public void SetPiecePos()
+    {                                  
 
         //UIAtlas atlas;
 		int xx=0, yy=0;
@@ -51,7 +52,8 @@ public class board : MonoBehaviour {
             }
         }
 	}
-	public static void xiangqizi(string sql,GameObject game,string name,int count){    
+    public static void InitPiece(string sql, GameObject game, string name, int count)
+    {    
 		/// P/	/// </summary>引用prefab 生成象棋的棋子
 
 		GameObject a = (GameObject)Instantiate(Resources.Load(sql));
@@ -61,12 +63,7 @@ public class board : MonoBehaviour {
 		b.transform.localPosition = new Vector3(0,0,0);
 		b.transform.localScale = new Vector3(1,1,1);
 	}
-	public void newgame(){
-		if (start == true) {
-			return;
-		}
-		start = true;
-	}
+
 	public void ChessInit(){
 		chess = new int[10, 9]{  //此注释要取消
 			{2,3,6,5,1,5,6,3,2},
@@ -81,25 +78,25 @@ public class board : MonoBehaviour {
 			{9,10,13,12,8,12,13,10,9}
 		};
 		//初始化其他对象
-        blackclick.ChessMove = true;
-        blackclick.str = "红方走";
-        blackclick.TrueOrFalse = true;
+        ChessControl.ChessMove = true;
+        ChessControl.NextPlayerTipStr = "红方走";
+        ChessControl.TrueOrFalse = true;
 		if (start == false) {
 			return;
 		}
 		//print (yemiantiaozhuang.ChessPeople);
-	    s = sprite1.text;
-		if (s == "简单")
+        DiffcultLevelStr = DiffcultLevelText.text;
+        if (DiffcultLevelStr == "简单")
 			SearchEngine.m_nSearchDepth = 1;
-		if (s == "一般")
+        if (DiffcultLevelStr == "一般")
 			SearchEngine.m_nSearchDepth = 2;
-		if (s == "困难")
+        if (DiffcultLevelStr == "困难")
 			SearchEngine.m_nSearchDepth = 3;
-        ChessChongzhi.Count = 0;//重置悔棋记录对象
-        ChessChongzhi.pos = new ChessChongzhi.QIZI[400];
+        BackStepChess.Count = 0;//重置悔棋记录对象
+        BackStepChess.pos = new BackStepChess.QIZI[400];
 		start=false;
 		//初始化棋盘
-        text();
+        SetPiecePos();
 		int count=1;
         for (int i = 1; i <= 90; i++)
         {
@@ -111,59 +108,59 @@ public class board : MonoBehaviour {
             {
                 case 1:
                     count++;
-                    xiangqizi("black_jiang", obj, "b_jiang", count);
+                    InitPiece("black_jiang", obj, "b_jiang", count);
                     break;
                 case 2:
                     count++;
-                    xiangqizi("black_ju", obj, "b_ju", count);
+                    InitPiece("black_ju", obj, "b_ju", count);
                     break;
                 case 3:
                     count++;
-                    xiangqizi("black_ma", obj, "b_ma", count);
+                    InitPiece("black_ma", obj, "b_ma", count);
                     break;
                 case 4:
                     count++;
-                    xiangqizi("black_pao", obj, "b_pao", count);
+                    InitPiece("black_pao", obj, "b_pao", count);
                     break;
                 case 5:
                     count++;
-                    xiangqizi("black_shi", obj, "b_shi", count);
+                    InitPiece("black_shi", obj, "b_shi", count);
                     break;
                 case 6:
                     count++;
-                    xiangqizi("black_xiang", obj, "b_xiang", count);
+                    InitPiece("black_xiang", obj, "b_xiang", count);
                     break;
                 case 7:
                     count++;
-                    xiangqizi("black_bing", obj, "b_bing", count);
+                    InitPiece("black_bing", obj, "b_bing", count);
                     break;
                 case 8:
                     count++;
-                    xiangqizi("red_shuai", obj, "r_shuai", count);
+                    InitPiece("red_shuai", obj, "r_shuai", count);
                     break;
                 case 9:
                     count++;
-                    xiangqizi("red_ju", obj, "r_ju", count);
+                    InitPiece("red_ju", obj, "r_ju", count);
                     break;
                 case 10:
                     count++;
-                    xiangqizi("red_ma", obj, "r_ma", count);
+                    InitPiece("red_ma", obj, "r_ma", count);
                     break;
                 case 11:
                     count++;
-                    xiangqizi("red_pao", obj, "r_pao", count);
+                    InitPiece("red_pao", obj, "r_pao", count);
                     break;
                 case 12:
                     count++;
-                    xiangqizi("red_shi", obj, "r_shi", count);
+                    InitPiece("red_shi", obj, "r_shi", count);
                     break;
                 case 13:
                     count++;
-                    xiangqizi("red_xiang", obj, "r_xiang", count);
+                    InitPiece("red_xiang", obj, "r_xiang", count);
                     break;
                 case 14:
                     count++;
-                    xiangqizi("red_bing", obj, "r_bing", count);
+                    InitPiece("red_bing", obj, "r_bing", count);
                     break;
             }
         }

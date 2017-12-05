@@ -6,7 +6,7 @@ public class SearchEngine : MonoBehaviour {
 	public int NOCHESS = 0;
 	public int m_nMaxDepth;
 	public static int m_nSearchDepth=2;
-	public Blackmove.CHESSMOVE m_cmBestMove;//存放最佳走法的变量
+    public MoveSetting.CHESSMOVE m_cmBestMove;//存放最佳走法的变量
     //棋子基本价值
     public int[] BaseValue = new int[15] { 0, 10000, 500, 350, 350, 250, 250, 100, 10000, 500, 350, 350, 250, 250, 100 };
     //棋子灵活性分数数组
@@ -24,11 +24,11 @@ public class SearchEngine : MonoBehaviour {
     //记录棋子的相关位置个数
     public int nPosCount;
     //记录一个棋子相关位置的数组
-    public Blackmove.CHESSMANPOS[] RelatePos = new Blackmove.CHESSMANPOS[30];
+    public MoveSetting.CHESSMANPOS[] RelatePos = new MoveSetting.CHESSMANPOS[30];
     //用来统计调用了估值函数的也子节点次数
     public int count = 0;
     //实例化
-    Blackmove bl = new Blackmove();
+    MoveSetting bl = new MoveSetting();
     //红兵的附加值数组
     public int[,] BA0 = new int [10,9]
 	{
@@ -81,9 +81,10 @@ public class SearchEngine : MonoBehaviour {
 	///////////////////////////////////////////
 	/// //知道坐标得到item名字
 	//
-	Blackmove m= new Blackmove ();
+    MoveSetting m = new MoveSetting();
 	GameObject obj;
-	public string Itemsconname(Blackmove.CHESSMOVE move){//得到点击目标位置gameobject的对象名字
+    public string Itemsconname(MoveSetting.CHESSMOVE move)
+    {//得到点击目标位置gameobject的对象名字
 
 		string s3="";
 		for (int i=1; i<=90; i++) {
@@ -95,7 +96,8 @@ public class SearchEngine : MonoBehaviour {
 		}
 		return s3;
 	}
-	public string Itemfirname(Blackmove.CHESSMOVE move){//得到开始位置gameobject的对象名字
+    public string Itemfirname(MoveSetting.CHESSMOVE move)
+    {//得到开始位置gameobject的对象名字
 		string s3="";
 		for (int i=1; i<=90; i++) {
 			obj = GameObject.Find("item"+i.ToString());
@@ -109,7 +111,8 @@ public class SearchEngine : MonoBehaviour {
 	//根据传入的走法                                  改变棋盘
 	//move是要进行的走法
 	//public int[,] CurPosition = new int[10, 9]; 
-	public int MakeMove(Blackmove.CHESSMOVE move){
+    public int MakeMove(MoveSetting.CHESSMOVE move)
+    {
 		int nChessID;
 		nChessID = Curposition [move.To.y, move.To.x];//取目标棋子
 		//把棋子移动到目标位置
@@ -122,7 +125,8 @@ public class SearchEngine : MonoBehaviour {
 	//	                                 根据走法恢复棋盘
 	//move 是要恢复的走法
 	//nChessID是原棋盘上move位置的棋子类型
-	void UnMakeMove(Blackmove.CHESSMOVE move,int nChessID){
+    void UnMakeMove(MoveSetting.CHESSMOVE move, int nChessID)
+    {
 	//将目标位置和棋子拷贝会原位
 		Curposition [move.From.y, move.From.x] = Curposition [move.To.y, move.To.x];
 		//恢复目标位置的棋子
@@ -160,12 +164,7 @@ public class SearchEngine : MonoBehaviour {
 
 	}
 
-		//极小窗口算法
-	//blackclick bl = new blackclick();
-//	IEnumerator Robot(){
-//		yield return new WaitForSeconds (0.2f);
-//		blackclick.threm();
-//	}
+
 	int PrincipalVariation(int depth,int alpha,int beta)
 	{
 		int score;
@@ -207,7 +206,8 @@ public class SearchEngine : MonoBehaviour {
 		}
 		return best;
 	}
-	public	Blackmove.CHESSMOVE SearchAGoodMove(int [,]position){
+    public MoveSetting.CHESSMOVE SearchAGoodMove(int[,] position)
+    {
 		//设置搜索层数
 		m_nMaxDepth = m_nSearchDepth;
 		//将传入的棋盘复制到成员变量中
@@ -219,20 +219,7 @@ public class SearchEngine : MonoBehaviour {
 		//极小窗口算法
 		PrincipalVariation (m_nMaxDepth, -20000, 20000);
 		MakeMove (m_cmBestMove);//此行经过测试  可有可无
-	/*	int x, y;//渴望算法
-		m_nMaxDepth = m_nSearchDepth-1;
-		x = Falphabeta (m_nMaxDepth, -20000, 20000);
-		//对目标小床进行搜索
-		m_nMaxDepth = m_nSearchDepth;
-		y = Falphabeta (m_nMaxDepth, x - 50, x + 50);
-		if (y < x - 50)
-			Falphabeta (m_nMaxDepth, -20000, y);
-		if (y > x + 50)
-			Falphabeta (m_nMaxDepth, y, 20000);*/
-		//wu.........
-		//调用负极大值搜索函数找最佳走法
-		//NegaMax (m_nMaxDepth);
-		blackclick.posthread = true;//线程的内容已经全部执行完毕
+        ChessControl.posthread = true;//线程的内容已经全部执行完毕
 		  return m_cmBestMove ;
 	}
 
@@ -249,11 +236,10 @@ public class SearchEngine : MonoBehaviour {
 			return BA1[y,x];
 		return 0;
 	}
-    //Blackmove me = new Blackmove();
+
 	//position是要估值的棋盘
 	//bIsRedTurn轮倒水走棋的标志，true red  false black
 	//列举与指定位置棋子相关的棋子
-	//int asd;
 	public int Eveluate(int [,]position,bool bIsRedTum)
 	{
 		int i, j, k;
@@ -414,35 +400,7 @@ public class SearchEngine : MonoBehaviour {
 				}
 			}
 		}
-		/*string str="保护性：\n";
-		for (int c=0; c<GuardPos.GetLength(0); c++) {
-			for(int d=0;d<GuardPos.GetLength(1);d++)
-				str+=" "+GuardPos[c,d];
-				str+="\n";
-		}
-		print (str);
-		str="灵活性:\n";
-		for (int c=0; c<FlexibilityPos.GetLength(0); c++) {
-			for(int d=0;d<FlexibilityPos.GetLength(1);d++)
-				str+=" "+FlexibilityPos[c,d];
-				str+="\n";
-		}
-		print (str);
-		str="威胁性：\n";
-		for (int c=0; c<AttackPos.GetLength(0); c++) {
-			for(int d=0;d<AttackPos.GetLength(1);d++)
-				str+=" "+AttackPos[c,d];
-				str+="\n";
-		}
-		print (str);
-		str="棋子价值：\n";
-		for (int c=0; c<chessValue.GetLength(0); c++) {
-			for(int d=0;d<chessValue.GetLength(1);d++)
-				str+=","+chessValue[c,d];
-			str+="\n";
-		}
-		print (str);
-*/
+		
 		//以上生成每个棋子的总价值
 		//以下统计红黑方的总分
 		int nRedValue = 0;
@@ -460,10 +418,8 @@ public class SearchEngine : MonoBehaviour {
 			}
 		}
 		if (bIsRedTum) {
-			//print (nRedValue - nBlackValue);
 			return  nRedValue - nBlackValue;//如果轮到红旗走返回估值
 		} else {
-			//print (nRedValue - nBlackValue);
 			return nBlackValue - nRedValue;//轮到黑棋走返回估值的相反数
 		}
 
@@ -720,18 +676,13 @@ public class SearchEngine : MonoBehaviour {
 		default:
 			break;
 		}
-	/*	string str = "";
-		for (int c=0; c<nPosCount; c++) {
-			str +="棋子位置是："+j+","+i + "-------" +"他的相关位置是:"+ RelatePos [c].x + "," + RelatePos [c].y + "**********";
-			str+="\n";
-		}
-		print (str);*/
+
 		return nPosCount;
 	}
 
 	//判断from 位置能否走到to
 	bool CanTouch(int [,]position,int nFromX,int nFromY,int nToX,int nToY){
-		//print (nFromX + " " + nFromY + " " + nToX + " " + nToY);
+		
 		int i=0, j=0;
 		int nMoveChessID;//, nTargetID;
 		if (nFromX == nToX && nFromY == nToY)
@@ -945,13 +896,5 @@ public class SearchEngine : MonoBehaviour {
 		RelatePos [nPosCount].y = y;
 		nPosCount++;
 	}
-	/*public void shuzi(int [,]Curpositio){
-		string str = "";
-		for (int i=0; i<Curpositio.GetLength(0); i++) {
-			for(int j=0;j<Curpositio.GetLength(1);j++)
-				str+=Curpositio[i,j];
-			str+="\n";
-		}
-		print (str);
-	}*/
+	
 }

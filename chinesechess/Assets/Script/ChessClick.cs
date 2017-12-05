@@ -7,7 +7,7 @@ public class ChessClick : MonoBehaviour {
     public void clickItemOrChess() 
     {
         GameObject obj = this.GetComponent<UIButton>().gameObject;
-        blackclick back = GameObject.Find("Main Camera").GetComponent<blackclick>();
+        ChessControl back = GameObject.Find("Main Camera").GetComponent<ChessControl>();
         back.IsClickCheck(obj);
     }
 }

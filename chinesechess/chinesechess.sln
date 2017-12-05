@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "chinesechess.CSharp", "chinesechess.CSharp.csproj", "{11921971-B1C9-9B70-87CF-305C6535A2E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "chinesechess.CSharp.Editor", "chinesechess.CSharp.Editor.csproj", "{C0220A52-4798-181B-C4BE-1AA5334B923A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{11921971-B1C9-9B70-87CF-305C6535A2E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11921971-B1C9-9B70-87CF-305C6535A2E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11921971-B1C9-9B70-87CF-305C6535A2E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11921971-B1C9-9B70-87CF-305C6535A2E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0220A52-4798-181B-C4BE-1AA5334B923A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0220A52-4798-181B-C4BE-1AA5334B923A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0220A52-4798-181B-C4BE-1AA5334B923A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0220A52-4798-181B-C4BE-1AA5334B923A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
