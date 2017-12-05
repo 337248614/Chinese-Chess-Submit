@@ -6,8 +6,8 @@ public class board : MonoBehaviour {
 	//public static ArrayList All;
     public static board instance;
     public Text DiffcultLevelText;
-    public static string DiffcultLevelStr = "简单";
-	public static int[,]chess = new int[10, 9]{
+    public string DiffcultLevelStr = "简单";
+	public int[,]chess = new int[10, 9]{
 	
 		{2,3,6,5,1,5,6,3,2},
 		{0,0,0,0,0,0,0,0,0},
@@ -24,8 +24,10 @@ public class board : MonoBehaviour {
 	public static bool start=true;
 	void Start () {
         instance = this;
+        if (BtnControl.ChessPeople == 1) { 
 		GameObject obj = GameObject.Find("newnandu");
         DiffcultLevelText = obj.GetComponent<Text>();
+        }
 	}
 	
     //动态添加了90个棋盘的格子 并且给它们位置等信息
@@ -44,20 +46,19 @@ public class board : MonoBehaviour {
             b.transform.localScale = new Vector3(1, 1, 1);
             b.name = "item" + i.ToString();                                           //suoyou所有的深度 都是5
             b.transform.localPosition = new Vector3(xx, yy, 0);
-            xx += 112;
-            if (xx >= 110 * 9)
+            xx += 43;
+            if (xx >= 43 * 9)
             {
-                yy -= 112;
+                yy -= 43;
                 xx = 0;
             }
         }
 	}
-    public static void InitPiece(string sql, GameObject game, string name, int count)
+    public  void InitPiece(string sql, GameObject game, string name, int count)
     {    
 		/// P/	/// </summary>引用prefab 生成象棋的棋子
-
 		GameObject a = (GameObject)Instantiate(Resources.Load(sql));
-		a.transform.parent = game.transform;
+		a.transform.SetParent(game.transform);
 		GameObject b = GameObject.Find(a.name);
 		b.name = name+count.ToString();
 		b.transform.localPosition = new Vector3(0,0,0);
@@ -78,13 +79,11 @@ public class board : MonoBehaviour {
 			{9,10,13,12,8,12,13,10,9}
 		};
 		//初始化其他对象
-        ChessControl.ChessMove = true;
-        ChessControl.NextPlayerTipStr = "红方走";
-        ChessControl.TrueOrFalse = true;
-		if (start == false) {
-			return;
-		}
-		//print (yemiantiaozhuang.ChessPeople);
+        ChessControl.instance.ChessMove = true;
+        ChessControl.instance.NextPlayerTipStr = "红方走";
+        ChessControl.instance.TrueOrFalse = true;
+		
+		
         DiffcultLevelStr = DiffcultLevelText.text;
         if (DiffcultLevelStr == "简单")
 			SearchEngine.m_nSearchDepth = 1;
@@ -93,17 +92,17 @@ public class board : MonoBehaviour {
         if (DiffcultLevelStr == "困难")
 			SearchEngine.m_nSearchDepth = 3;
         BackStepChess.Count = 0;//重置悔棋记录对象
-        BackStepChess.pos = new BackStepChess.QIZI[400];
-		start=false;
+
+		
 		//初始化棋盘
         SetPiecePos();
 		int count=1;
         for (int i = 1; i <= 90; i++)
         {
             GameObject obj = GameObject.Find("item" + i.ToString());
-            //	All.Add(obj);
-            int x = System.Convert.ToInt32((obj.transform.localPosition.x) / 112);
-            int y = System.Convert.ToInt32(Mathf.Abs((obj.transform.localPosition.y) / 112));
+           
+            int x = System.Convert.ToInt32((obj.transform.localPosition.x) / 43);
+            int y = System.Convert.ToInt32(Mathf.Abs((obj.transform.localPosition.y) / 43));
             switch (chess[y, x])
             {
                 case 1:

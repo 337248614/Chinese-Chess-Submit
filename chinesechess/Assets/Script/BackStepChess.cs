@@ -1,11 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BackStepChess : MonoBehaviour {
+public class BackStepChess :MonoBehaviour{
+
+    public static BackStepChess instance; 
 
     int jiluCont= 0;//如果现在是用户胜利，点击悔棋
-	public static QIZI[]pos = new QIZI[400];//将对弈的过程存储起来
+	public  QIZI[]pos = new QIZI[400];//将对弈的过程存储起来
+
 	public static int Count;//统计的步数初始化为0
+
+    void Start() 
+    {
+        instance = this;
+    }
+
 	public struct HUIQIposition{
 		public int x;
 		public int y;
@@ -72,8 +81,8 @@ public class BackStepChess : MonoBehaviour {
 		string s3="";
 		for (int i=1; i<=90; i++) {
 			obj = GameObject.Find("item"+i.ToString());
-			int x=System.Convert.ToInt32((obj.transform.localPosition.x)/112);
-			int y = System.Convert.ToInt32(Mathf.Abs((obj.transform.localPosition.y)/112));
+			int x=System.Convert.ToInt32((obj.transform.localPosition.x)/43);
+			int y = System.Convert.ToInt32(Mathf.Abs((obj.transform.localPosition.y)/43));
 			if(x==tox&&y==toy)
 				s3=obj.name;
 		}
@@ -88,8 +97,8 @@ public class BackStepChess : MonoBehaviour {
 		for (int i=1; i<=90; i++) 
         {
 			obj = GameObject.Find("item"+i.ToString());
-			int x=System.Convert.ToInt32((obj.transform.localPosition.x)/112);
-			int y = System.Convert.ToInt32(Mathf.Abs((obj.transform.localPosition.y)/112));
+			int x=System.Convert.ToInt32((obj.transform.localPosition.x)/43);
+			int y = System.Convert.ToInt32(Mathf.Abs((obj.transform.localPosition.y)/43));
 			if(x==fromx&&y==fromy)
 				s3=obj.name;
 		}
@@ -106,11 +115,11 @@ public class BackStepChess : MonoBehaviour {
 		for(int i=1;i<=90;i++)
 		{
 			GameObject Clear = GameObject.Find("prefabs"+i.ToString());
-			Destroy(Clear);
+            GameObject.Destroy(Clear);
 		}
-        if (ChessControl.ChessMove == false && BtnControl.ChessPeople == 1) 
+        if (ChessControl.instance.ChessMove == false && BtnControl.ChessPeople == 1) 
         {
-            if (ChessControl.NextPlayerTipStr == "红色棋子胜利")
+            if (ChessControl.instance.NextPlayerTipStr == "红色棋子胜利")
             {
 				//人机状态时候红色棋子胜利悔棋
                 BtnControl.ChessPeople = 2;//先把他等于2
@@ -128,8 +137,7 @@ public class BackStepChess : MonoBehaviour {
 			int twoID = pos [f].ChessID.y;//黑色旗子移动到的位置的ID
 			int threeID = pos [s].ChessID.x;//红色旗子原来位置的ID
 			int forID = pos [s].ChessID.y;//红色旗子移动到的位置ID 
-			//print (pos [f].From.x + "," + pos [f].From.y + "--" + pos [f].To.x + "," + pos [f].To.y);
-			//print (board.chess [0, 0]);
+
 			GameObject obj1, obj2, obj3, obj4;
             //bool IsfalseOrtrue;
 			obj1 = pos [f].obj1;//第一个款
@@ -146,49 +154,49 @@ public class BackStepChess : MonoBehaviour {
             //IstrueOrfalse = pos [s].BlackOrRed;
 
 			if (obj4 != null) {//黑色等于吃子
-				obj3.transform.parent = obj1.transform;
-				obj4.transform.parent = obj2.transform;
+				obj3.transform.SetParent(obj1.transform);
+				obj4.transform.SetParent(obj2.transform);
 				obj3.transform.localPosition = Vector3.zero;
 				obj4.transform.localPosition = Vector3.zero;
-				board.chess [pos [f].From.y, pos [f].From.x] = oneID;
-				board.chess [pos [f].To.y, pos [f].To.x] = twoID;
+				board.instance.chess [pos [f].From.y, pos [f].From.x] = oneID;
+                board.instance.chess[pos[f].To.y, pos[f].To.x] = twoID;
 				if (o4 != null) {//红色吃子状态
-					o3.transform.parent = o1.transform;
-					o4.transform.parent = o2.transform;
+                    o3.transform.SetParent(o1.transform);
+                    o4.transform.SetParent(o2.transform);
 					o3.transform.localPosition = Vector3.zero;
 					o4.transform.localPosition = Vector3.zero;
-					board.chess [pos [s].From.y, pos [s].From.x] = threeID;
-					board.chess [pos [s].To.y, pos [s].To.x] = forID;
+                    board.instance.chess[pos[s].From.y, pos[s].From.x] = threeID;
+                    board.instance.chess[pos[s].To.y, pos[s].To.x] = forID;
 				} else {
-					o3.transform.parent = o1.transform;
+					o3.transform.SetParent(o1.transform);
 					o3.transform.localPosition = Vector3.zero;
-					board.chess [pos [s].From.y, pos [s].From.x] = threeID;
-					board.chess [pos [s].To.y, pos [s].To.x] = 0;
+                    board.instance.chess[pos[s].From.y, pos[s].From.x] = threeID;
+                    board.instance.chess[pos[s].To.y, pos[s].To.x] = 0;
 				}
 			} else {//黑色等于走棋
-				obj3.transform.parent = obj1.transform;
+                obj3.transform.SetParent(obj1.transform);
 				obj3.transform.localPosition = Vector3.zero;
-				board.chess [pos [f].From.y, pos [f].From.x] = oneID;
-				board.chess [pos [f].To.y, pos [f].To.x] = 0;
+                board.instance.chess[pos[f].From.y, pos[f].From.x] = oneID;
+                board.instance.chess[pos[f].To.y, pos[f].To.x] = 0;
 				if (o4 != null) {
-					o3.transform.parent = o1.transform;
-					o4.transform.parent = o2.transform;
+					o3.transform.SetParent(o1.transform);
+					o4.transform.SetParent(o2.transform);
 					o3.transform.localPosition = Vector3.zero;
 					o4.transform.localPosition = Vector3.zero;
-					board.chess [pos [s].From.y, pos [s].From.x] = threeID;
-					board.chess [pos [s].To.y, pos [s].To.x] = forID;
+                    board.instance.chess[pos[s].From.y, pos[s].From.x] = threeID;
+                    board.instance.chess[pos[s].To.y, pos[s].To.x] = forID;
 				} else {
-					o3.transform.parent = o1.transform;
+					o3.transform.SetParent(o1.transform);
 					o3.transform.localPosition = Vector3.zero;
-					board.chess [pos [s].From.y, pos [s].From.x] = threeID;
-					board.chess [pos [s].To.y, pos [s].To.x] = 0;
+                    board.instance.chess[pos[s].From.y, pos[s].From.x] = threeID;
+                    board.instance.chess[pos[s].To.y, pos[s].To.x] = 0;
 				}
 		
 			}
-            ChessControl.ChessMove = true;
+            ChessControl.instance.ChessMove = true;
 			Count -= 2;
-            ChessControl.TrueOrFalse = true;//在将帅被吃了的情况下 给他能走棋
-            ChessControl.NextPlayerTipStr = "红方走";
+            ChessControl.instance.TrueOrFalse = true;//在将帅被吃了的情况下 给他能走棋
+            ChessControl.instance.NextPlayerTipStr = "红方走";
 			KingPosition.JiangJunCheck ();
 
 
@@ -215,34 +223,33 @@ public class BackStepChess : MonoBehaviour {
             //GameObject o1, o2, o3, o4;
             //bool IstrueOrfalse;
 			if (obj4 != null) {//最后一步等于吃子
-				obj3.transform.parent = obj1.transform;
-				obj4.transform.parent = obj2.transform;
+                obj3.transform.SetParent(obj1.transform);
+                obj4.transform.SetParent(obj2.transform);
 				obj3.transform.localPosition = Vector3.zero;
 				obj4.transform.localPosition = Vector3.zero;
-				board.chess [pos [f].From.y, pos [f].From.x] = oneID;
-				board.chess [pos [f].To.y, pos [f].To.x] = twoID;
+                board.instance.chess[pos[f].From.y, pos[f].From.x] = oneID;
+                board.instance.chess[pos[f].To.y, pos[f].To.x] = twoID;
 
 			}
 			else{
-				obj3.transform.parent = obj1.transform;
+                obj3.transform.SetParent(obj1.transform);
 				obj3.transform.localPosition = Vector3.zero;
-				board.chess [pos [f].From.y, pos [f].From.x] = oneID;
-				board.chess [pos [f].To.y, pos [f].To.x] = 0;
+                board.instance.chess[pos[f].From.y, pos[f].From.x] = oneID;
+                board.instance.chess[pos[f].To.y, pos[f].To.x] = 0;
 			}
-            if (ChessControl.ChessMove == false)
+            if (ChessControl.instance.ChessMove == false)
             {
-                ChessControl.NextPlayerTipStr = "红方走";
-                ChessControl.ChessMove = true;
+                ChessControl.instance.NextPlayerTipStr = "红方走";
+                ChessControl.instance.ChessMove = true;
 			}
 			else{
-                ChessControl.ChessMove = false;
-                ChessControl.NextPlayerTipStr = "黑方走";
+                ChessControl.instance.ChessMove = false;
+                ChessControl.instance.NextPlayerTipStr = "黑方走";
 			}Count -= 1;
-            ChessControl.TrueOrFalse = true;//在将帅被吃了的情况下 给他能走棋
+            ChessControl.instance.TrueOrFalse = true;//在将帅被吃了的情况下 给他能走棋
 			KingPosition.JiangJunCheck ();
 		} 
 		else {
-			print("return");
 			return;
 		}
 	}

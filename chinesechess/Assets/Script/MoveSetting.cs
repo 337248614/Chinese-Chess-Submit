@@ -1,8 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MoveSetting : MonoBehaviour {
+public class MoveSetting : MonoBehaviour  {
+    public static MoveSetting instance; 
+    
+
     public CHESSMOVE[,] m_MoveList = new CHESSMOVE[8, 80]; //存放合法走法的队列
+    //记录一个棋子相关位置的数组
+    public CHESSMANPOS[] RelatePos = new CHESSMANPOS[30];
 	public int m_nMoveCount;
     public int NOCHESS = 0;//没有棋子时候
 
@@ -18,7 +23,10 @@ public class MoveSetting : MonoBehaviour {
 		public CHESSMANPOS To;//走到的位置
 		public int Score;//值
 	}
-
+    void Start()
+    {
+        instance = this;
+    }
 	//判断一个棋子是不是黑色
 	public bool IsBlack(int x){
 		if (x > 0 && x < 8)
@@ -63,46 +71,46 @@ public class MoveSetting : MonoBehaviour {
 					continue;//如果产生黑棋走法，跳过红棋
 				switch(nChessID){
 				case 1://黑将
-					Gen_KingMove(position,i,j,nPly);
+                        Gen_KingMoveAddSearch(position, i, j, nPly);
 					break;
 				case 2://黑车
-					Gen_CarMove(position,i,j,nPly);
+                    Gen_CarMoveAddSearch(position, i, j, nPly);
 					break;
 				case 3://黑马
-					Gen_HorseMove(position,i,j,nPly);
+                    Gen_HorseMoveAddSearch(position, i, j, nPly);
 					break;
 				case 4://hei pao
-					Gen_CanonMove(position,i,j,nPly);
+                    Gen_CanonMoveAddSearch(position, i, j, nPly);
 					break;
 				case 5://shi
-					Gen_BBishopMove(position,i,j,nPly);
+                    Gen_BBishopMoveAddSearch(position, i, j, nPly);
 					break;
 				case 6://xiang
-					Gen_ElephantMove(position,i,j,nPly);
+                    Gen_ElephantMoveAddSearch(position, i, j, nPly);
 					break;
 				case 7://bing
-					Gen_BPawnMove(position,i,j,nPly);
+                    Gen_BPawnMoveAddSearch(position, i, j, nPly);
 					break;
 				case 8://shuai
-					Gen_KingMove(position,i,j,nPly);
+                    Gen_KingMoveAddSearch(position, i, j, nPly);
 					break;
 				case 9://che
-					Gen_CarMove(position,i,j,nPly);
+                    Gen_CarMoveAddSearch(position, i, j, nPly);
 					break;
 				case 10://ma
-					Gen_HorseMove(position,i,j,nPly);
+                    Gen_HorseMoveAddSearch(position, i, j, nPly);
 					break;
 				case 11://pao
-					Gen_CanonMove(position,i,j,nPly);
+                    Gen_CanonMoveAddSearch(position, i, j, nPly);
 					break;
 				case 12://shi
-					Gen_RBishopMove(position,i,j,nPly);
+                    Gen_RBishopMoveAddSearch(position, i, j, nPly);
 					break;
 				case 13://xiang
-					Gen_ElephantMove(position,i,j,nPly);
+                    Gen_ElephantMoveAddSearch(position, i, j, nPly);
 					break;
 				case 14://bing
-					Gen_RPawnMove(position,i,j,nPly);
+                    Gen_RPawnMoveAddSearch(position, i, j, nPly);
 					break;
 				}
 			}
@@ -119,9 +127,7 @@ public class MoveSetting : MonoBehaviour {
 	//nply走法所在层次
 	int AddMove(int [,]position,int nFromx,int nFromy,int nTox,int nToy,int nPly){
 		if (m_nMoveCount >= 80)
-			print (m_nMoveCount);
 		if (nPly >= 8)
-			print (nPly);
 		if (!rules.KingBye (position, nFromx, nFromy, nTox, nToy))//判断是否老将见面 如果是见面了   就让他不加
 			return m_nMoveCount;
 		m_MoveList [nPly, m_nMoveCount].From.x = nFromx;
@@ -136,7 +142,7 @@ public class MoveSetting : MonoBehaviour {
 	//将帅的走法
 	//i，j标明棋子位置
 	//nply标明插入到list第几层
-	void Gen_KingMove(int [,]position,int i,int j,int nPly){
+	void Gen_KingMoveAddSearch(int [,]position,int i,int j,int nPly){
 		int x, y;
 		for (y=0; y<3; y++)
 			for (x=3; x<6; x++)
@@ -149,7 +155,8 @@ public class MoveSetting : MonoBehaviour {
 		
 	}
 	//红士的走法
-	void Gen_RBishopMove(int [,]position,int i,int j,int nPly){
+    void Gen_RBishopMoveAddSearch(int[,] position, int i, int j, int nPly)
+    {
 		//i j棋子位置   x y目标位置
 		int x, y;
 		for(y=7;y<10;y++)
@@ -158,7 +165,8 @@ public class MoveSetting : MonoBehaviour {
 					AddMove(position,j,i,x,y,nPly);
 	}
 	//黑士走法
-	void Gen_BBishopMove(int [,]position,int i,int j,int nPly){
+    void Gen_BBishopMoveAddSearch(int[,] position, int i, int j, int nPly)
+    {
 		int x, y;
 		for(y=0;y<3;y++)
 			for(x=3;x<6;x++)
@@ -166,7 +174,8 @@ public class MoveSetting : MonoBehaviour {
 					AddMove(position,j,i,x,y,nPly);
 	}
 	//相象走法
-	void Gen_ElephantMove(int [,]position,int i,int j,int nPly){
+    void Gen_ElephantMoveAddSearch(int[,] position, int i, int j, int nPly)
+    {
 		int x, y;
 		//向右下方走步
 		x = j + 2;
@@ -191,7 +200,8 @@ public class MoveSetting : MonoBehaviour {
 
 	}
 	//马的走法
-	void Gen_HorseMove(int [,]position,int i,int j,int nPly){
+    void Gen_HorseMoveAddSearch(int[,] position, int i, int j, int nPly)
+    {
 		int x, y;
 		//插入右下方的有效走法
 		x = j + 2;
@@ -236,7 +246,8 @@ public class MoveSetting : MonoBehaviour {
 
 	}
 	//车的走法
-	void Gen_CarMove(int [,]position,int i,int j,int nPly){
+    void Gen_CarMoveAddSearch(int[,] position, int i, int j, int nPly)
+    {
 		int x, y;
 		int nChessID;
 		nChessID = position [i, j];
@@ -296,7 +307,8 @@ public class MoveSetting : MonoBehaviour {
 		}
 	}
 	//红卒的走法
-	void Gen_RPawnMove(int [,]position,int i,int j,int nPly){
+    void Gen_RPawnMoveAddSearch(int[,] position, int i, int j, int nPly)
+    {
 		int x, y;
 		int nChessID;
 		nChessID = position [i, j];
@@ -315,7 +327,8 @@ public class MoveSetting : MonoBehaviour {
 		}
 	}
 	//黑兵走法
-	void Gen_BPawnMove(int [,]position,int i,int j,int nPly){
+    void Gen_BPawnMoveAddSearch(int[,] position, int i, int j, int nPly)
+    {
 		int x, y;
 		int nChessID;
 		nChessID = position [i, j];
@@ -335,7 +348,8 @@ public class MoveSetting : MonoBehaviour {
 
 	}
 	//炮走法
-	void Gen_CanonMove(int [,]position,int i,int j,int nPly){
+    void Gen_CanonMoveAddSearch(int[,] position, int i, int j, int nPly)
+    {
 		int x, y;
 		bool flag;
 		int nChessID;
@@ -432,41 +446,41 @@ public class MoveSetting : MonoBehaviour {
     public void ClickChess(int fromx, int fromy)
     {
         //print (board.chess[fromy,fromx]+" "+fromx + " " + fromy);
-        int ChessID = board.chess[fromy, fromx];
+        int ChessID = board.instance.chess[fromy, fromx];
         switch (ChessID)
         {
             case 1:
             case 8:
-                Gen_KingMove(board.chess, fromx, fromy);
+                Gen_KingMoveDraw(board.instance.chess, fromx, fromy);
                 break;
             case 2:
             case 9:
-                Gen_CarMove(board.chess, fromx, fromy);
+                Gen_CarMoveDraw(board.instance.chess, fromx, fromy);
                 break;
             case 3:
             case 10:
-                Gen_HorseMove(board.chess, fromx, fromy);
+                Gen_HorseMoveDraw(board.instance.chess, fromx, fromy);
                 break;
             case 4:
             case 11:
-                Gen_CanonMove(board.chess, fromx, fromy);
+                Gen_CanonMoveDraw(board.instance.chess, fromx, fromy);
                 break;
             case 5://黑士
-                Gen_BBishopMove(board.chess, fromx, fromy);
+                Gen_BBishopMoveDraw(board.instance.chess, fromx, fromy);
                 break;
             case 6://黑象
             case 13://红相
-                Gen_ElephantMove(board.chess, fromx, fromy);
+                Gen_ElephantMoveDraw(board.instance.chess, fromx, fromy);
                 break;
             case 7://黑兵
-                Gen_BPawnMove(board.chess, fromx, fromy);
+                Gen_BPawnMoveDraw(board.instance.chess, fromx, fromy);
                 break;
             case 12://红shi
-                Gen_RBishopMove(board.chess, fromx, fromy);
+                Gen_RBishopMoveDraw(board.instance.chess, fromx, fromy);
                 break;
 
             case 14://红兵
-                Gen_RPawnMove(board.chess, fromx, fromy);
+                Gen_RPawnMoveDraw(board.instance.chess, fromx, fromy);
                 break;
         }
     }
@@ -489,8 +503,8 @@ public class MoveSetting : MonoBehaviour {
             //print(!rules.KingBye(position,c,d,x,y));
             //			print (c + "," + d + "-" + x + "," + y);
             return;
-        int wid = x * 112;
-        int heit = y * (-112);
+        int wid = x * 43;
+        int heit = y * (-43);
 
         for (int i = 1; i <= 90; i++)
         {
@@ -500,21 +514,20 @@ public class MoveSetting : MonoBehaviour {
                 //得到了game  对象    了解game对象坐标 
                 GameObject obj = GameObject.Find("chess");//找到预设体参照物
                 GameObject ite;
-                if (board.chess[y, x] == 0)
-                    ite = (GameObject)Instantiate(Resources.Load("canmove"));//找到预设体
+                if (board.instance.chess[y, x] == 0)
+                    ite = (GameObject)GameObject.Instantiate(Resources.Load("canmove"));//找到预设体
                 else
-                    ite = (GameObject)Instantiate(Resources.Load("nengchi"));//找到预设体
-                ite.transform.parent = obj.transform;
+                    ite = (GameObject)GameObject.Instantiate(Resources.Load("nengchi"));//找到预设体
+                ite.transform.SetParent(obj.transform);
                 GameObject b = GameObject.Find(ite.name);    //找到这个预设体的名字，给他做一些操作
                 b.name = "prefabs" + i.ToString();
                 b.transform.localPosition = new Vector3(wid, heit, 0);
-                b.transform.localScale = new Vector3(1, 1, 1);
-                //GameObject objecta = GameObject.Find(b.name);
+                b.transform.localScale = new Vector3(1, 1, 1);                
             }
         }
     }
     //得到将的走法
-    void Gen_KingMove(int[,] position, int j, int i)
+    void Gen_KingMoveDraw(int[,] position, int j, int i)
     {//两个参数 fromx  和fromy
         int x, y;
         for (y = 0; y < 3; y++)
@@ -528,7 +541,7 @@ public class MoveSetting : MonoBehaviour {
 
     }
     //红士的走法
-    void Gen_RBishopMove(int[,] position, int j, int i)
+    void Gen_RBishopMoveDraw(int[,] position, int j, int i)
     {
         //i j棋子位置   x y目标位置
         int x, y;
@@ -538,7 +551,7 @@ public class MoveSetting : MonoBehaviour {
                     GetPrefabs(position, j, i, x, y);
     }
     //黑士走法
-    void Gen_BBishopMove(int[,] position, int j, int i)
+    void Gen_BBishopMoveDraw(int[,] position, int j, int i)
     {
         int x, y;
         for (y = 0; y < 3; y++)
@@ -547,7 +560,7 @@ public class MoveSetting : MonoBehaviour {
                     GetPrefabs(position, j, i, x, y);
     }
     //相象走法
-    void Gen_ElephantMove(int[,] position, int j, int i)
+    void Gen_ElephantMoveDraw(int[,] position, int j, int i)
     {
         int x, y;
         //向右下方走步
@@ -572,7 +585,7 @@ public class MoveSetting : MonoBehaviour {
             GetPrefabs(position, j, i, x, y);
     }
     //马的走法
-    void Gen_HorseMove(int[,] position, int j, int i)
+    void Gen_HorseMoveDraw(int[,] position, int j, int i)
     {
         int x, y;
         //插入右下方的有效走法
@@ -618,7 +631,7 @@ public class MoveSetting : MonoBehaviour {
 
     }
     //车的走法
-    void Gen_CarMove(int[,] position, int j, int i)
+    void Gen_CarMoveDraw(int[,] position, int j, int i)
     {
         int x, y;
         int nChessID;
@@ -685,7 +698,7 @@ public class MoveSetting : MonoBehaviour {
         }
     }
     //红卒的走法
-    void Gen_RPawnMove(int[,] position, int j, int i)
+    void Gen_RPawnMoveDraw(int[,] position, int j, int i)
     {
         int x, y;
         int nChessID;
@@ -706,7 +719,7 @@ public class MoveSetting : MonoBehaviour {
         }
     }
     //黑兵走法
-    void Gen_BPawnMove(int[,] position, int j, int i)
+    void Gen_BPawnMoveDraw(int[,] position, int j, int i)
     {
         int x, y;
         int nChessID;
@@ -728,7 +741,7 @@ public class MoveSetting : MonoBehaviour {
 
     }
     //炮走法
-    void Gen_CanonMove(int[,] position, int j, int i)
+    void Gen_CanonMoveDraw(int[,] position, int j, int i)
     {
         int x, y;
         bool flag;
@@ -818,11 +831,8 @@ public class MoveSetting : MonoBehaviour {
                     flag = true;
                 else
                 {
-                    Debug.Log("wait");
-                    Debug.Log(!IsSameSide(nChessID, position[y, x]));
                     if (!IsSameSide(nChessID, position[y, x]))
                     {
-                        Debug.Log("wait");
                         GetPrefabs(position, j, i, x, y);
                     }
                     break;
