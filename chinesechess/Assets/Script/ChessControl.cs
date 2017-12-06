@@ -10,7 +10,6 @@ public class ChessControl : MonoBehaviour {
 	public  bool ChessMove =true;//true   redMove   false BlackMove
 	public  bool TrueOrFalse=true;//判断这个时候输赢状态能否走棋  //重新开始记得该true
 	public  string RedName=null,BlackName=null,ItemName;//blackchessname  and   redchessname
-	int bestmove;
     public MoveSetting.CHESSMOVE chere;
 	GameObject renji;//识别人机走到哪里
 	public static bool posthread=true;//判断线程里面的内容是否执行完毕
@@ -47,7 +46,7 @@ public class ChessControl : MonoBehaviour {
             ItemName = ClickItem.name;//得到item名字
 	}
 	//移动
-    void IsMove(GameObject FromPosObj, GameObject ToPosObj, int FromX, int FromY, int ToX, int ToY)
+    void MoveChess(GameObject FromPosObj, GameObject ToPosObj, int FromX, int FromY, int ToX, int ToY)
     {
         FromPosObj.transform.SetParent(ToPosObj.transform);
         FromPosObj.transform.localPosition = Vector3.zero;
@@ -55,7 +54,7 @@ public class ChessControl : MonoBehaviour {
         board.instance.chess[FromY, FromX] = 0;
 	}
 	//吃子
-    void IsEat(GameObject FromPosObj, GameObject ToPosObj, int FromX, int FromY, int ToX, int ToY)
+    void EatChess(GameObject FromPosObj, GameObject ToPosObj, int FromX, int FromY, int ToX, int ToY)
     {
 
         GameObject ToPosObjfather = ToPosObj.gameObject.transform.parent.gameObject;//得到第二个的父亲
@@ -98,7 +97,7 @@ public class ChessControl : MonoBehaviour {
 				if(RedName == null)
 					return;
                 //string sssRed = RedName;//记录红色棋子的名字
-                bool ba = rules.IsValidMove(board.instance.chess, FromX, FromY, ToX, ToY);
+                bool ba = rules.instance.IsValidMove(board.instance.chess, FromX, FromY, ToX, ToY);
 			if(!ba)
 					return;
 
@@ -106,9 +105,9 @@ public class ChessControl : MonoBehaviour {
             int b = board.instance.chess[ToY, ToX];
                 BackStepChess.instance.AddChess(BackStepChess.Count, FromX, FromY, ToX, ToY, true, a, b);
                 GameObject RedPiece = GameObject.Find(RedName);
-                IsMove(RedPiece, ClickItem, FromX, FromY, ToX, ToY);//走了
+                MoveChess(RedPiece, ClickItem, FromX, FromY, ToX, ToY);//走了
                 NextPlayerTipStr = "黑方走";
-				KingPosition.JiangJunCheck();
+                rules.instance.JiangJunCheck();
 				ChessMove = false;
 				//getString();
                 if (NextPlayerTipStr == "红色棋子胜利")
@@ -128,7 +127,7 @@ public class ChessControl : MonoBehaviour {
 			else{//黑色走
 				if(BlackName==null)
 					return;
-                bool ba = rules.IsValidMove(board.instance.chess, FromX, FromY, ToX, ToY);
+                bool ba = rules.instance.IsValidMove(board.instance.chess, FromX, FromY, ToX, ToY);
 				if(!ba)
 					return;
                 int a = board.instance.chess[FromY, FromX];
@@ -136,12 +135,12 @@ public class ChessControl : MonoBehaviour {
                 BackStepChess.instance.AddChess(BackStepChess.Count, FromX, FromY, ToX, ToY, true, a, b);
 				//看看是否能播放音乐
                 GameObject BlackPiece = GameObject.Find(BlackName);
-                IsMove(BlackPiece, ClickItem, FromX, FromY, ToX, ToY);
+                MoveChess(BlackPiece, ClickItem, FromX, FromY, ToX, ToY);
 			
 				//黑色走棋
 				ChessMove = true;
                 NextPlayerTipStr = "红方走";
-				KingPosition.JiangJunCheck();
+                rules.instance.JiangJunCheck();
 			}
 			break;
 		case 1://点击到了黑色  是否选中  还是  红色要吃子
@@ -161,7 +160,7 @@ public class ChessControl : MonoBehaviour {
 					GameObject Clear = GameObject.Find("prefabs"+i.ToString());
 					Destroy(Clear);
 				}
-				MoveSetting.instance.ClickChess(FromX,FromY);
+                MoveSetting.instance.ClickChessMoveDraw(FromX, FromY);
 			}
 			else{
 				for(int i=1;i<=90;i++)
@@ -173,7 +172,7 @@ public class ChessControl : MonoBehaviour {
 					return;
 				ToX = x;
 				ToY = y;
-                bool ba = rules.IsValidMove(board.instance.chess, FromX, FromY, ToX, ToY);
+                bool ba = rules.instance.IsValidMove(board.instance.chess, FromX, FromY, ToX, ToY);
 				if(!ba)
 					return;
                 int a = board.instance.chess[FromY, FromX];
@@ -182,11 +181,11 @@ public class ChessControl : MonoBehaviour {
 				//看看是否能播放音乐
                 GameObject RedPiece = GameObject.Find(RedName);
                 GameObject BlackPiece = GameObject.Find(BlackName);
-                IsEat(RedPiece, BlackPiece, FromX, FromY, ToX, ToY);
+                EatChess(RedPiece, BlackPiece, FromX, FromY, ToX, ToY);
 				ChessMove = false;
 				//红色吃子  变黑色走
                 NextPlayerTipStr = "黑方走";
-				KingPosition.JiangJunCheck();
+                rules.instance.JiangJunCheck();
                 if (NextPlayerTipStr == "红色棋子胜利")
 					return ;//因为没有携程关系  每次进入黑色走棋的时候都判断 棋局是否结束
                 if (BtnControl.ChessPeople == 2)
@@ -218,7 +217,7 @@ public class ChessControl : MonoBehaviour {
 					GameObject Clear = GameObject.Find("prefabs"+i.ToString());
 					Destroy(Clear);
 				}
-                MoveSetting.instance.ClickChess(FromX, FromY);
+                MoveSetting.instance.ClickChessMoveDraw(FromX, FromY);
                 
 			}
 			else{
@@ -231,7 +230,7 @@ public class ChessControl : MonoBehaviour {
 					return;
 					ToX = x;
 					ToY = y;
-                    bool ba = rules.IsValidMove(board.instance.chess, FromX, FromY, ToX, ToY);
+                    bool ba = rules.instance.IsValidMove(board.instance.chess, FromX, FromY, ToX, ToY);
 				if(!ba)
 					return;
                 int a = board.instance.chess[FromY, FromX];
@@ -240,12 +239,12 @@ public class ChessControl : MonoBehaviour {
 				//看看是否能播放音乐
                 GameObject RedPiece = GameObject.Find(RedName);
                 GameObject BlackPiece = GameObject.Find(BlackName);
-                IsEat(BlackPiece, RedPiece, FromX, FromY, ToX, ToY);                
+                EatChess(BlackPiece, RedPiece, FromX, FromY, ToX, ToY);                
 				RedName = null;
 				BlackName = null;
 				ChessMove = true;
                 NextPlayerTipStr = "红方走";
-				KingPosition.JiangJunCheck();                
+                rules.instance.JiangJunCheck();                
 			}
 			break;
 	
@@ -263,8 +262,8 @@ public class ChessControl : MonoBehaviour {
             string s2 = "";
             string s3 = "";
             string s4 = "";
-            s1 = GetFromPositionObjName(chere);
-            s2 = GetToPositionObjName(chere);
+            s1 = PosGetChess(chere.From.x, chere.From.y).name;
+            s2 = PosGetChess(chere.To.x, chere.To.y).name;
             GameObject one = GameObject.Find(s1);
             GameObject two = GameObject.Find(s2);
             foreach (Transform child in one.transform)
@@ -279,7 +278,7 @@ public class ChessControl : MonoBehaviour {
                 int b = board.instance.chess[chere.To.y, chere.To.x];
                 BackStepChess.instance.AddChess(BackStepChess.Count, chere.From.x, chere.From.y, chere.To.x, chere.To.y, false, a, b);
                 GameObject SelectPiece = GameObject.Find(s3);
-                IsMove(SelectPiece, two, chere.From.x, chere.From.y, chere.To.x, chere.To.y);//走了
+                MoveChess(SelectPiece, two, chere.From.x, chere.From.y, chere.To.x, chere.To.y);//走了
                 renji.transform.localPosition = one.transform.localPosition;
 
             }
@@ -290,7 +289,7 @@ public class ChessControl : MonoBehaviour {
                 BackStepChess.instance.AddChess(BackStepChess.Count, chere.From.x, chere.From.y, chere.To.x, chere.To.y, false, a, b);
                 GameObject BlackPiece = GameObject.Find(s3);
                 GameObject RedPiece = GameObject.Find(s4);
-                IsEat(BlackPiece, RedPiece, chere.From.x, chere.From.y, chere.To.x, chere.To.y);
+                EatChess(BlackPiece, RedPiece, chere.From.x, chere.From.y, chere.To.x, chere.To.y);
                 renji.transform.localPosition = one.transform.localPosition;
 
             }
@@ -304,41 +303,25 @@ public class ChessControl : MonoBehaviour {
             BlackSelectChess = GameObject.Find(s3).transform;
             BlackSelectChess.GetChild(0).gameObject.SetActive(true);
             NextPlayerTipStr = "红方走";
-            KingPosition.JiangJunCheck();
+            rules.instance.JiangJunCheck();
             ChessMove = true;
         }
 
 	}
-    //得到一步棋目标位置gameobject的对象名字
-    string GetToPositionObjName(MoveSetting.CHESSMOVE move)
-    {
-
+    
+    public GameObject PosGetChess(int PosX, int PoxY)
+    {//得到开始位置gameobject的对象名字
+        GameObject obj;
         string s3 = "";
         for (int i = 1; i <= 90; i++)
         {
-            GameObject obj = GameObject.Find("item" + i.ToString());
+            obj = GameObject.Find("item" + i.ToString());
             int x = System.Convert.ToInt32((obj.transform.localPosition.x) / 43);
             int y = System.Convert.ToInt32(Mathf.Abs((obj.transform.localPosition.y) / 43));
-            if (x == move.To.x && y == move.To.y)
+            if (x == PosX && y == PoxY)
                 s3 = obj.name;
         }
-        return s3;
+        obj = GameObject.Find(s3);
+        return obj;
     }
-
-    //得到一步棋开始位置gameobject的对象名字
-    string GetFromPositionObjName(MoveSetting.CHESSMOVE move)
-    {
-        
-        string s3 = "";
-        for (int i = 1; i <= 90; i++)
-        {
-            GameObject obj = GameObject.Find("item" + i.ToString());
-            int x = System.Convert.ToInt32((obj.transform.localPosition.x) / 43);
-            int y = System.Convert.ToInt32(Mathf.Abs((obj.transform.localPosition.y) / 43));
-            if (x == move.From.x && y == move.From.y)
-                s3 = obj.name;
-        }
-        return s3;
-    }
-
 }

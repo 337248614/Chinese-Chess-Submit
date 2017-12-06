@@ -165,7 +165,5 @@ public class board : MonoBehaviour {
         }
 	}
 	
-	public void gameover(){
-		Application.Quit ();
-	}
+	
 }

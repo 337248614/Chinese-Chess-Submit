@@ -1,15 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class MoveSetting : MonoBehaviour  {
-    public static MoveSetting instance; 
-    
-
-    public CHESSMOVE[,] m_MoveList = new CHESSMOVE[8, 80]; //存放合法走法的队列
+public class MoveSetting : MonoBehaviour, IMoveSetting
+{
+    //单例模式
+    public static MoveSetting instance;
+    //存放合法走法的队列
+    public CHESSMOVE[,] m_MoveList = new CHESSMOVE[8, 80];
     //记录一个棋子相关位置的数组
     public CHESSMANPOS[] RelatePos = new CHESSMANPOS[30];
-	public int m_nMoveCount;
-    public int NOCHESS = 0;//没有棋子时候
+    //存放所有走法的数量
+	int m_nMoveCount;
+
 
     //定义一个棋子位置的结构
 	public struct CHESSMANPOS{
@@ -28,28 +30,7 @@ public class MoveSetting : MonoBehaviour  {
         instance = this;
     }
 	//判断一个棋子是不是黑色
-	public bool IsBlack(int x){
-		if (x > 0 && x < 8)
-			return true;
-		else
-			return false;
-	}
 
-	//判断一个棋子是不是红色
-	public bool IsRed(int x){
-		if (x >= 8 && x < 15)
-			return true;
-		else
-			return false;
-	}
-
-	//判断两个棋子是不是同颜色
-	public bool IsSameSide(int x,int y){
-		if (IsBlack (x) && IsBlack (y) || IsRed (x) && IsRed (y))
-			return true;
-		else
-			return false;
-	}
 
 	//产生给定棋盘上所有合法的走法
 	//用来产生局面position中所有可能的走法
@@ -63,11 +44,11 @@ public class MoveSetting : MonoBehaviour  {
 		m_nMoveCount = 0;
 		for (j=0; j<9; j++)
 			for (i=0; i<10; i++) {
-			if(position[i,j]!=NOCHESS){
+			if(position[i,j]!=0){
 				nChessID=position[i,j];
-				if(!nSide&&IsRed(nChessID))
+                if (!nSide && rules.instance.IsRed(nChessID))
 					continue;//如果产生黑棋走法，跳过红棋
-				if(nSide&&IsBlack(nChessID))
+                if (nSide && rules.instance.IsBlack(nChessID))
 					continue;//如果产生黑棋走法，跳过红棋
 				switch(nChessID){
 				case 1://黑将
@@ -128,7 +109,7 @@ public class MoveSetting : MonoBehaviour  {
 	int AddMove(int [,]position,int nFromx,int nFromy,int nTox,int nToy,int nPly){
 		if (m_nMoveCount >= 80)
 		if (nPly >= 8)
-		if (!rules.KingBye (position, nFromx, nFromy, nTox, nToy))//判断是否老将见面 如果是见面了   就让他不加
+            if (!rules.instance.KingBye(position, nFromx, nFromy, nTox, nToy))//判断是否老将见面 如果是见面了   就让他不加
 			return m_nMoveCount;
 		m_MoveList [nPly, m_nMoveCount].From.x = nFromx;
 		m_MoveList [nPly, m_nMoveCount].From.y = nFromy;
@@ -146,11 +127,11 @@ public class MoveSetting : MonoBehaviour  {
 		int x, y;
 		for (y=0; y<3; y++)
 			for (x=3; x<6; x++)
-				if (rules.IsValidMove (position, j, i, x, y)) //走法是否合法
+                if (rules.instance.IsValidMove(position, j, i, x, y)) //走法是否合法
 					AddMove(position,j,i,x,y,nPly);
 		for(y=7;y<10;y++)
 			for(x=3;x<6;x++)
-				if (rules.IsValidMove (position, j, i, x, y))//走法是否合法
+                if (rules.instance.IsValidMove(position, j, i, x, y))//走法是否合法
 					AddMove(position,j,i,x,y,nPly);
 		
 	}
@@ -161,7 +142,7 @@ public class MoveSetting : MonoBehaviour  {
 		int x, y;
 		for(y=7;y<10;y++)
 			for(x=3;x<6;x++)
-				if (rules.IsValidMove (position, j, i, x, y))//走法是否合法
+                if (rules.instance.IsValidMove(position, j, i, x, y))//走法是否合法
 					AddMove(position,j,i,x,y,nPly);
 	}
 	//黑士走法
@@ -170,7 +151,7 @@ public class MoveSetting : MonoBehaviour  {
 		int x, y;
 		for(y=0;y<3;y++)
 			for(x=3;x<6;x++)
-				if (rules.IsValidMove (position, j, i, x, y))//走法是否合法
+                if (rules.instance.IsValidMove(position, j, i, x, y))//走法是否合法
 					AddMove(position,j,i,x,y,nPly);
 	}
 	//相象走法
@@ -180,22 +161,22 @@ public class MoveSetting : MonoBehaviour  {
 		//向右下方走步
 		x = j + 2;
 		y = i + 2;
-		if (x <9 && y < 10 && rules.IsValidMove (position, j, i, x, y))
+        if (x < 9 && y < 10 && rules.instance.IsValidMove(position, j, i, x, y))
 			AddMove(position,j,i,x,y,nPly);
 		//向右上方走步
 		x = j + 2;
 		y = i - 2;
-		if (x <9&&y>=0&&rules.IsValidMove (position, j, i, x, y))
+        if (x < 9 && y >= 0 && rules.instance.IsValidMove(position, j, i, x, y))
 			AddMove(position,j,i,x,y,nPly);
 		//向左下方走步
 		x = j - 2;
 		y = i + 2;
-		if (x >=0&&y<10&&rules.IsValidMove (position, j, i, x, y))
+        if (x >= 0 && y < 10 && rules.instance.IsValidMove(position, j, i, x, y))
 			AddMove(position,j,i,x,y,nPly);
 		//向左上方走步
 		x = j - 2;
 		y = i - 2;
-		if (x>=0&&y >=0&&rules.IsValidMove (position, j, i, x, y))
+        if (x >= 0 && y >= 0 && rules.instance.IsValidMove(position, j, i, x, y))
 			AddMove(position,j,i,x,y,nPly);
 
 	}
@@ -206,42 +187,42 @@ public class MoveSetting : MonoBehaviour  {
 		//插入右下方的有效走法
 		x = j + 2;
 		y = i + 1;
-		if ((x < 9 && y < 10) && rules.IsValidMove (position, j, i, x, y))
+        if ((x < 9 && y < 10) && rules.instance.IsValidMove(position, j, i, x, y))
 			AddMove(position,j,i,x,y,nPly);
 		//插入右上方的有效走法
 		x = j + 2;
 		y = i - 1;
-		if((x<9&&y>=0)&&rules.IsValidMove(position,j,i,x,y))
+		if((x<9&&y>=0)&&rules.instance.IsValidMove(position,j,i,x,y))
 			AddMove(position,j,i,x,y,nPly);
 		//左下
 		x = j - 2;
 		y = i + 1;
-		if((x>=0&&y<10)&&rules.IsValidMove(position,j,i,x,y))
+		if((x>=0&&y<10)&&rules.instance.IsValidMove(position,j,i,x,y))
 			AddMove(position,j,i,x,y,nPly);
 		//左上
 		x = j - 2;
 		y = i - 1;
-		if((x>=0&&y>=0)&&rules.IsValidMove(position,j,i,x,y))
+		if((x>=0&&y>=0)&&rules.instance.IsValidMove(position,j,i,x,y))
 			AddMove(position,j,i,x,y,nPly);
 		//右下
 		x = j + 1;
 		y = i + 2;
-		if((x<9&&y<10)&&rules.IsValidMove(position,j,i,x,y))
+		if((x<9&&y<10)&&rules.instance.IsValidMove(position,j,i,x,y))
 			AddMove(position,j,i,x,y,nPly);
 		//left down
 		x = j - 1;
 		y = i + 2;
-		if((x>=0&&y<10)&&rules.IsValidMove(position,j,i,x,y))
+		if((x>=0&&y<10)&&rules.instance.IsValidMove(position,j,i,x,y))
 			AddMove(position,j,i,x,y,nPly);
 		//right down
 		x = j + 1;
 		y = i - 2;
-		if((x<9&&y>=0)&&rules.IsValidMove(position,j,i,x,y))
+		if((x<9&&y>=0)&&rules.instance.IsValidMove(position,j,i,x,y))
 			AddMove(position,j,i,x,y,nPly);
 		//left top
 		x = j - 1;
 		y = i - 2;
-		if((x>=0&&y>=0)&&rules.IsValidMove(position,j,i,x,y))
+		if((x>=0&&y>=0)&&rules.instance.IsValidMove(position,j,i,x,y))
 			AddMove(position,j,i,x,y,nPly);
 
 	}
@@ -255,10 +236,10 @@ public class MoveSetting : MonoBehaviour  {
 		x = j + 1;
 		y = i;
 		while (x<9) {
-			if(position[y,x]==NOCHESS)
+			if(position[y,x]==0)
 				AddMove(position,j,i,x,y,nPly);
 			else{
-				if(!IsSameSide(nChessID,position[y,x]))
+                if (!rules.instance.IsSameSide(nChessID, position[y, x]))
 					AddMove(position,j,i,x,y,nPly);
 				break;
 			}
@@ -269,10 +250,10 @@ public class MoveSetting : MonoBehaviour  {
 		y = i;
 		while (x>=0) {
 
-		if(position[y,x]==NOCHESS)
+		if(position[y,x]==0)
 				AddMove(position,j,i,x,y,nPly);
 			else{
-				if(!IsSameSide(nChessID,position[y,x]))
+                if (!rules.instance.IsSameSide(nChessID, position[y, x]))
 					AddMove(position,j,i,x,y,nPly);
 				break;
 			}
@@ -283,10 +264,10 @@ public class MoveSetting : MonoBehaviour  {
 		//down
 		while (y<10) {
 		
-				if (position [y, x] == NOCHESS)
+				if (position [y, x] == 0)
 					AddMove(position,j,i,x,y,nPly);
 				else {
-					if (!IsSameSide (nChessID, position [y, x]))
+                    if (!rules.instance.IsSameSide(nChessID, position[y, x]))
 						AddMove(position,j,i,x,y,nPly);
 					break;
 				}
@@ -296,10 +277,10 @@ public class MoveSetting : MonoBehaviour  {
 		x = j;
 		y = i - 1;
 		while (y>=0) {
-				if (position [y, x] == NOCHESS)
+				if (position [y, x] == 0)
 					AddMove(position,j,i,x,y,nPly);
 				else {
-					if (!IsSameSide (nChessID, position [y, x]))
+                    if (!rules.instance.IsSameSide(nChessID, position[y, x]))
 						AddMove(position,j,i,x,y,nPly);
 					break;
 				}
@@ -314,15 +295,15 @@ public class MoveSetting : MonoBehaviour  {
 		nChessID = position [i, j];
 		y = i - 1;
 		x = j;
-		if(y>0&&!IsSameSide(nChessID,position[y,x]))
+        if (y > 0 && !rules.instance.IsSameSide(nChessID, position[y, x]))
 		AddMove(position,j,i,x,y,nPly);
 		if (i < 5) {
 			y = i;
 			x = j + 1;//right
-				if (x < 9 && !IsSameSide (nChessID, position [y, x]))
+            if (x < 9 && !rules.instance.IsSameSide(nChessID, position[y, x]))
 					AddMove(position,j,i,x,y,nPly);
 				x = j - 1;//right
-				if (x >= 0 && !IsSameSide (nChessID, position [y, x]))
+                if (x >= 0 && !rules.instance.IsSameSide(nChessID, position[y, x]))
 					AddMove(position,j,i,x,y,nPly);
 		}
 	}
@@ -334,15 +315,15 @@ public class MoveSetting : MonoBehaviour  {
 		nChessID = position [i, j];
 		y = i + 1;//前
 		x = j;
-			if (y < 10 && !IsSameSide (nChessID, position [y, x]))
+        if (y < 10 && !rules.instance.IsSameSide(nChessID, position[y, x]))
 				AddMove(position,j,i,x,y,nPly);
 		if (i > 4) {
 			y=i;
 			x=j+1;
-			if(x<9&&!IsSameSide(nChessID,position[y,x]))
+            if (x < 9 && !rules.instance.IsSameSide(nChessID, position[y, x]))
 				AddMove(position,j,i,x,y,nPly);
 			x=j-1;
-			if(x>=0&&!IsSameSide(nChessID,position[y,x]))
+            if (x >= 0 && !rules.instance.IsSameSide(nChessID, position[y, x]))
 				AddMove(position,j,i,x,y,nPly);
 		}
 
@@ -359,7 +340,7 @@ public class MoveSetting : MonoBehaviour  {
 		y = i;
 		flag = false;
 		while (x<9) {
-			if(position[y,x]==NOCHESS){
+			if(position[y,x]==0){
 				if(!flag)
 					AddMove(position,j,i,x,y,nPly);//没有格棋子插入可以走位置
 			}
@@ -367,7 +348,7 @@ public class MoveSetting : MonoBehaviour  {
 				if(!flag)
 					flag = true;
 				else{
-					if(!IsSameSide(nChessID,position[y,x]))
+                    if (!rules.instance.IsSameSide(nChessID, position[y, x]))
 						AddMove(position,j,i,x,y,nPly);
 					break;
 				}
@@ -377,7 +358,7 @@ public class MoveSetting : MonoBehaviour  {
 		x = j - 1;
 		flag = false;
 		while (x>=0) {
-			if (position [y, x] == NOCHESS) {
+			if (position [y, x] == 0) {
 		if(!flag)
 					AddMove(position,j,i,x,y,nPly);
 			}
@@ -385,7 +366,7 @@ public class MoveSetting : MonoBehaviour  {
 				if(!flag)
 					flag=true;
 				else{
-					if(!IsSameSide(nChessID,position[y,x]))
+                    if (!rules.instance.IsSameSide(nChessID, position[y, x]))
 						AddMove(position,j,i,x,y,nPly);
 					break;
 				}
@@ -396,7 +377,7 @@ public class MoveSetting : MonoBehaviour  {
 		y = i + 1;
 		flag = false;
 		while (y<10) {
-			if(position[y,x]==NOCHESS){
+			if(position[y,x]==0){
 				if(!flag)
 					AddMove(position,j,i,x,y,nPly);
 			}
@@ -404,7 +385,7 @@ public class MoveSetting : MonoBehaviour  {
 				if(!flag)
 					flag = true;
 				else{
-					if(!IsSameSide(nChessID,position[y,x]))
+                    if (!rules.instance.IsSameSide(nChessID, position[y, x]))
 						AddMove(position,j,i,x,y,nPly);
 					break;
 				}
@@ -414,7 +395,7 @@ public class MoveSetting : MonoBehaviour  {
 		y = i - 1;
 		flag = false;
 		while (y>=0) {
-			if(position[y,x]==NOCHESS){
+			if(position[y,x]==0){
 				if(!flag)
 					AddMove(position,j,i,x,y,nPly);
 			}
@@ -422,7 +403,7 @@ public class MoveSetting : MonoBehaviour  {
 				if(!flag)
 					flag = true;
 				else{
-					if(!IsSameSide(nChessID,position[y,x]))
+                    if (!rules.instance.IsSameSide(nChessID, position[y, x]))
 						AddMove(position,j,i,x,y,nPly);
 					break;
 				}
@@ -443,7 +424,7 @@ public class MoveSetting : MonoBehaviour  {
     //6.设置预设体的位置   tox， toy
     /*-----------------------------------------*/
     //判断点击到的是什么棋子
-    public void ClickChess(int fromx, int fromy)
+    public void ClickChessMoveDraw(int fromx, int fromy)
     {
         //print (board.chess[fromy,fromx]+" "+fromx + " " + fromy);
         int ChessID = board.instance.chess[fromy, fromx];
@@ -485,7 +466,7 @@ public class MoveSetting : MonoBehaviour  {
         }
     }
     //把传入进来的可走位置全部画出来
-    public void GetPrefabs(int[,] position, int c, int d, int x, int y)
+    void GetPrefabs(int[,] position, int c, int d, int x, int y)
     {//得到相关位置的item坐标  tox  toy
         //先进行与社体清空
         //	for (int i=1; i<=90; i++) {
@@ -499,7 +480,7 @@ public class MoveSetting : MonoBehaviour  {
             str+="\n";
         }
         print (str);*/
-        if (!rules.KingBye(position, c, d, x, y))
+        if (!rules.instance.KingBye(position, c, d, x, y))
             //print(!rules.KingBye(position,c,d,x,y));
             //			print (c + "," + d + "-" + x + "," + y);
             return;
@@ -532,11 +513,11 @@ public class MoveSetting : MonoBehaviour  {
         int x, y;
         for (y = 0; y < 3; y++)
             for (x = 3; x < 6; x++)
-                if (rules.IsValidMove(position, j, i, x, y)) //走法是否合法
+                if (rules.instance.IsValidMove(position, j, i, x, y)) //走法是否合法
                     GetPrefabs(position, j, i, x, y);
         for (y = 7; y < 10; y++)
             for (x = 3; x < 6; x++)
-                if (rules.IsValidMove(position, j, i, x, y))//走法是否合法
+                if (rules.instance.IsValidMove(position, j, i, x, y))//走法是否合法
                     GetPrefabs(position, j, i, x, y);
 
     }
@@ -547,7 +528,7 @@ public class MoveSetting : MonoBehaviour  {
         int x, y;
         for (y = 7; y < 10; y++)
             for (x = 3; x < 6; x++)
-                if (rules.IsValidMove(position, j, i, x, y))//走法是否合法
+                if (rules.instance.IsValidMove(position, j, i, x, y))//走法是否合法
                     GetPrefabs(position, j, i, x, y);
     }
     //黑士走法
@@ -556,7 +537,7 @@ public class MoveSetting : MonoBehaviour  {
         int x, y;
         for (y = 0; y < 3; y++)
             for (x = 3; x < 6; x++)
-                if (rules.IsValidMove(position, j, i, x, y))//走法是否合法
+                if (rules.instance.IsValidMove(position, j, i, x, y))//走法是否合法
                     GetPrefabs(position, j, i, x, y);
     }
     //相象走法
@@ -566,22 +547,22 @@ public class MoveSetting : MonoBehaviour  {
         //向右下方走步
         x = j + 2;
         y = i + 2;
-        if (x < 9 && y < 10 && rules.IsValidMove(position, j, i, x, y))
+        if (x < 9 && y < 10 && rules.instance.IsValidMove(position, j, i, x, y))
             GetPrefabs(position, j, i, x, y);
         //向右上方走步
         x = j + 2;
         y = i - 2;
-        if (x < 9 && y >= 0 && rules.IsValidMove(position, j, i, x, y))
+        if (x < 9 && y >= 0 && rules.instance.IsValidMove(position, j, i, x, y))
             GetPrefabs(position, j, i, x, y);
         //向左下方走步
         x = j - 2;
         y = i + 2;
-        if (x >= 0 && y < 10 && rules.IsValidMove(position, j, i, x, y))
+        if (x >= 0 && y < 10 && rules.instance.IsValidMove(position, j, i, x, y))
             GetPrefabs(position, j, i, x, y);
         //向左上方走步
         x = j - 2;
         y = i - 2;
-        if (x >= 0 && y >= 0 && rules.IsValidMove(position, j, i, x, y))
+        if (x >= 0 && y >= 0 && rules.instance.IsValidMove(position, j, i, x, y))
             GetPrefabs(position, j, i, x, y);
     }
     //马的走法
@@ -591,42 +572,42 @@ public class MoveSetting : MonoBehaviour  {
         //插入右下方的有效走法
         x = j + 2;
         y = i + 1;
-        if ((x < 9 && y < 10) && rules.IsValidMove(position, j, i, x, y))
+        if ((x < 9 && y < 10) && rules.instance.IsValidMove(position, j, i, x, y))
             GetPrefabs(position, j, i, x, y);
         //插入右上方的有效走法
         x = j + 2;
         y = i - 1;
-        if ((x < 9 && y >= 0) && rules.IsValidMove(position, j, i, x, y))
+        if ((x < 9 && y >= 0) && rules.instance.IsValidMove(position, j, i, x, y))
             GetPrefabs(position, j, i, x, y);
         //左下
         x = j - 2;
         y = i + 1;
-        if ((x >= 0 && y < 10) && rules.IsValidMove(position, j, i, x, y))
+        if ((x >= 0 && y < 10) && rules.instance.IsValidMove(position, j, i, x, y))
             GetPrefabs(position, j, i, x, y);
         //左上
         x = j - 2;
         y = i - 1;
-        if ((x >= 0 && y >= 0) && rules.IsValidMove(position, j, i, x, y))
+        if ((x >= 0 && y >= 0) && rules.instance.IsValidMove(position, j, i, x, y))
             GetPrefabs(position, j, i, x, y);
         //右下
         x = j + 1;
         y = i + 2;
-        if ((x < 9 && y < 10) && rules.IsValidMove(position, j, i, x, y))
+        if ((x < 9 && y < 10) && rules.instance.IsValidMove(position, j, i, x, y))
             GetPrefabs(position, j, i, x, y);
         //left down
         x = j - 1;
         y = i + 2;
-        if ((x >= 0 && y < 10) && rules.IsValidMove(position, j, i, x, y))
+        if ((x >= 0 && y < 10) && rules.instance.IsValidMove(position, j, i, x, y))
             GetPrefabs(position, j, i, x, y);
         //right down
         x = j + 1;
         y = i - 2;
-        if ((x < 9 && y >= 0) && rules.IsValidMove(position, j, i, x, y))
+        if ((x < 9 && y >= 0) && rules.instance.IsValidMove(position, j, i, x, y))
             GetPrefabs(position, j, i, x, y);
         //left top
         x = j - 1;
         y = i - 2;
-        if ((x >= 0 && y >= 0) && rules.IsValidMove(position, j, i, x, y))
+        if ((x >= 0 && y >= 0) && rules.instance.IsValidMove(position, j, i, x, y))
             GetPrefabs(position, j, i, x, y);
 
     }
@@ -645,7 +626,7 @@ public class MoveSetting : MonoBehaviour  {
                 GetPrefabs(position, j, i, x, y);
             else
             {
-                if (!IsSameSide(nChessID, position[y, x]))
+                if (!rules.instance.IsSameSide(nChessID, position[y, x]))
                     GetPrefabs(position, j, i, x, y);
                 break;
             }
@@ -660,7 +641,7 @@ public class MoveSetting : MonoBehaviour  {
                 GetPrefabs(position, j, i, x, y);
             else
             {
-                if (!IsSameSide(nChessID, position[y, x]))
+                if (!rules.instance.IsSameSide(nChessID, position[y, x]))
                     GetPrefabs(position, j, i, x, y);
                 break;
             }
@@ -675,7 +656,7 @@ public class MoveSetting : MonoBehaviour  {
                 GetPrefabs(position, j, i, x, y);
             else
             {
-                if (!IsSameSide(nChessID, position[y, x]))
+                if (!rules.instance.IsSameSide(nChessID, position[y, x]))
                     GetPrefabs(position, j, i, x, y);
                 break;
             }
@@ -690,7 +671,7 @@ public class MoveSetting : MonoBehaviour  {
                 GetPrefabs(position, j, i, x, y);
             else
             {
-                if (!IsSameSide(nChessID, position[y, x]))
+                if (!rules.instance.IsSameSide(nChessID, position[y, x]))
                     GetPrefabs(position, j, i, x, y);
                 break;
             }
@@ -705,16 +686,16 @@ public class MoveSetting : MonoBehaviour  {
         nChessID = position[i, j];
         y = i - 1;
         x = j;
-        if (y > 0 && !IsSameSide(nChessID, position[y, x]))
+        if (y > 0 && !rules.instance.IsSameSide(nChessID, position[y, x]))
             GetPrefabs(position, j, i, x, y);
         if (i < 5)
         {
             y = i;
             x = j + 1;//right
-            if (x < 9 && !IsSameSide(nChessID, position[y, x]))
+            if (x < 9 && !rules.instance.IsSameSide(nChessID, position[y, x]))
                 GetPrefabs(position, j, i, x, y);
             x = j - 1;//right
-            if (x >= 0 && !IsSameSide(nChessID, position[y, x]))
+            if (x >= 0 && !rules.instance.IsSameSide(nChessID, position[y, x]))
                 GetPrefabs(position, j, i, x, y);
         }
     }
@@ -726,16 +707,16 @@ public class MoveSetting : MonoBehaviour  {
         nChessID = position[i, j];
         y = i + 1;//前
         x = j;
-        if (y < 10 && !IsSameSide(nChessID, position[y, x]))
+        if (y < 10 && !rules.instance.IsSameSide(nChessID, position[y, x]))
             GetPrefabs(position, j, i, x, y);
         if (i > 4)
         {
             y = i;
             x = j + 1;
-            if (x < 9 && !IsSameSide(nChessID, position[y, x]))
+            if (x < 9 && !rules.instance.IsSameSide(nChessID, position[y, x]))
                 GetPrefabs(position, j, i, x, y);
             x = j - 1;
-            if (x >= 0 && !IsSameSide(nChessID, position[y, x]))
+            if (x >= 0 && !rules.instance.IsSameSide(nChessID, position[y, x]))
                 GetPrefabs(position, j, i, x, y);
         }
 
@@ -764,7 +745,7 @@ public class MoveSetting : MonoBehaviour  {
                     flag = true;
                 else
                 {
-                    if (!IsSameSide(nChessID, position[y, x]))
+                    if (!rules.instance.IsSameSide(nChessID, position[y, x]))
                         GetPrefabs(position, j, i, x, y);
                     break;
                 }
@@ -786,7 +767,7 @@ public class MoveSetting : MonoBehaviour  {
                     flag = true;
                 else
                 {
-                    if (!IsSameSide(nChessID, position[y, x]))
+                    if (!rules.instance.IsSameSide(nChessID, position[y, x]))
                         GetPrefabs(position, j, i, x, y);
                     break;
                 }
@@ -809,7 +790,7 @@ public class MoveSetting : MonoBehaviour  {
                     flag = true;
                 else
                 {
-                    if (!IsSameSide(nChessID, position[y, x]))
+                    if (!rules.instance.IsSameSide(nChessID, position[y, x]))
                         GetPrefabs(position, j, i, x, y);
                     break;
                 }
@@ -831,7 +812,7 @@ public class MoveSetting : MonoBehaviour  {
                     flag = true;
                 else
                 {
-                    if (!IsSameSide(nChessID, position[y, x]))
+                    if (!rules.instance.IsSameSide(nChessID, position[y, x]))
                     {
                         GetPrefabs(position, j, i, x, y);
                     }

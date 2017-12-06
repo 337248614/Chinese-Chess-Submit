@@ -5,7 +5,7 @@ public class BackStepChess :MonoBehaviour{
 
     public static BackStepChess instance; 
 
-    int jiluCont= 0;//如果现在是用户胜利，点击悔棋
+    bool IsOnePersonWin= false;//如果现在是用户胜利，点击悔棋
 	public  QIZI[]pos = new QIZI[400];//将对弈的过程存储起来
 
 	public static int Count;//统计的步数初始化为0
@@ -35,11 +35,11 @@ public class BackStepChess :MonoBehaviour{
 	//开始位置的坐标和终点位置的坐标   
 	public void AddChess(int count,int fromx,int fromy,int tox,int toy,bool IsTrueOrfalse,int ID1,int ID2)
     {//每次走棋都把棋子位置添加进去
-		GameObject item1 = ItemOne (fromx, fromy, tox, toy);//得到第一个框名字
-		GameObject item2 = ItemTow (fromx, fromy, tox, toy);//得到第二个框名字
+        GameObject item1 = ChessControl.instance.PosGetChess(fromx, fromy);//得到第一个框名字
+        GameObject item2 = ChessControl.instance.PosGetChess(tox, toy);//得到第二个框名字
 		//如果是吃子
-		GameObject firstChess = chessOne (item1);//得到第一个旗子名字
-		GameObject scondeChess = ChessTwo (item2);//得到第二个棋子名字
+        GameObject firstChess = item1.transform.GetChild(0).gameObject;//得到第一个旗子名字
+        GameObject scondeChess = item2.transform.GetChild(0).gameObject;//得到第二个棋子名字
 		pos [count].From.x = fromx;
 		pos [count].From.y = fromy;
 		pos [count].To.x = tox;
@@ -53,60 +53,11 @@ public class BackStepChess :MonoBehaviour{
 		pos [count].ChessID.y = ID2;
 		Count++;
 	}
-	//得到第一个旗子名字
-	GameObject chessOne(GameObject obj)
-    {
-		string s = "";
-		GameObject game = null;
-		foreach(Transform child in obj.transform)
-			s=child.name;//第一个象棋名字
-		game = GameObject.Find (s);
-		return game;
-	}
-	//得到第二个旗子名字
-	GameObject ChessTwo(GameObject obj)
-    {
-		string s = "";
-		GameObject game = null;
-		foreach(Transform child in obj.transform)
-			s=child.name;//第二个象棋名字
-		game = GameObject.Find (s);
-		return game;
-	}
-	//得到第二个旗子名字
-	//得到第二个对象名字
-	GameObject ItemTow(int fromx,int fromy,int tox,int toy)
-    {//得到点击目标位置gameobject的对象名字
-		GameObject obj;
-		string s3="";
-		for (int i=1; i<=90; i++) {
-			obj = GameObject.Find("item"+i.ToString());
-			int x=System.Convert.ToInt32((obj.transform.localPosition.x)/43);
-			int y = System.Convert.ToInt32(Mathf.Abs((obj.transform.localPosition.y)/43));
-			if(x==tox&&y==toy)
-				s3=obj.name;
-		}
-		obj = GameObject.Find (s3);
-		return obj;
-	}
-	//得到第一个对象名字
-	GameObject ItemOne(int fromx,int fromy,int tox,int toy)
-    {//得到开始位置gameobject的对象名字
-		GameObject obj;
-		string s3="";
-		for (int i=1; i<=90; i++) 
-        {
-			obj = GameObject.Find("item"+i.ToString());
-			int x=System.Convert.ToInt32((obj.transform.localPosition.x)/43);
-			int y = System.Convert.ToInt32(Mathf.Abs((obj.transform.localPosition.y)/43));
-			if(x==fromx&&y==fromy)
-				s3=obj.name;
-		}
-		obj = GameObject.Find (s3);
-		return obj;
-	}
-	//开始悔棋功能了
-		
+
+
+	
+
+	//开始悔棋功能了		
 	public void IloveHUIQI()
     {
 
@@ -123,7 +74,7 @@ public class BackStepChess :MonoBehaviour{
             {
 				//人机状态时候红色棋子胜利悔棋
                 BtnControl.ChessPeople = 2;//先把他等于2
-				jiluCont++;
+                IsOnePersonWin=true;
 			}
 			return;
 		}
@@ -139,14 +90,14 @@ public class BackStepChess :MonoBehaviour{
 			int forID = pos [s].ChessID.y;//红色旗子移动到的位置ID 
 
 			GameObject obj1, obj2, obj3, obj4;
-            //bool IsfalseOrtrue;
+
 			obj1 = pos [f].obj1;//第一个款
 			obj2 = pos [f].obj2;//第二个框
 			obj3 = pos [f].objfrist;//第一个旗子
 			obj4 = pos [f].objsconde;//第二个旗子
-            //IsfalseOrtrue = pos [f].BlackOrRed;//现在红色还是黑色
+
 			GameObject o1, o2, o3, o4;
-            //bool IstrueOrfalse;
+
 			o1 = pos [s].obj1;//第一个款
 			o2 = pos [s].obj2;//第二个框
 			o3 = pos [s].objfrist;//第一个旗子
@@ -197,15 +148,16 @@ public class BackStepChess :MonoBehaviour{
 			Count -= 2;
             ChessControl.instance.TrueOrFalse = true;//在将帅被吃了的情况下 给他能走棋
             ChessControl.instance.NextPlayerTipStr = "红方走";
-			KingPosition.JiangJunCheck ();
+            rules.instance.JiangJunCheck();
 
 
         }
         else if (BtnControl.ChessPeople == 2)
         {
-			if(jiluCont>=1){
+            if (IsOnePersonWin)
+            {
                 BtnControl.ChessPeople = 1;
-				jiluCont=0;
+                IsOnePersonWin=false;
 			}
 			if(Count<=0)
 				return;
@@ -247,7 +199,7 @@ public class BackStepChess :MonoBehaviour{
                 ChessControl.instance.NextPlayerTipStr = "黑方走";
 			}Count -= 1;
             ChessControl.instance.TrueOrFalse = true;//在将帅被吃了的情况下 给他能走棋
-			KingPosition.JiangJunCheck ();
+            rules.instance.JiangJunCheck();
 		} 
 		else {
 			return;

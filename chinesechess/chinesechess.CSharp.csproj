@@ -370,7 +370,7 @@
     <Compile Include="Assets\Script\BtnControl.cs" />
     <Compile Include="Assets\Script\ChessClick.cs" />
     <Compile Include="Assets\Script\ChessControl.cs" />
-    <Compile Include="Assets\Script\KingPosition.cs" />
+    <Compile Include="Assets\Script\IMoveSetting.cs" />
     <Compile Include="Assets\Script\MoveSetting.cs" />
     <Compile Include="Assets\Script\ReStartChess.cs" />
     <Compile Include="Assets\Script\rules.cs" />

@@ -22,12 +22,6 @@ public class BtnControl : MonoBehaviour
         }
     }
 
-    public void ClickDropDown() {
-        StartGame.GetComponent<UIButton>().enabled = false;
-    }
-
-
-    //ChessChongzhi chess = new ChessChongzhi ();
     public void BackMainScene()
     {
         SceneManager.LoadScene("MainMenu");
@@ -52,5 +46,8 @@ public class BtnControl : MonoBehaviour
     {
         SceneManager.LoadScene("Setup");
     }
-
+    public void GameOver()
+    {
+        Application.Quit();
+    }
 }

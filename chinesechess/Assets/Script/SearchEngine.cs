@@ -4,34 +4,33 @@ using System.Collections;
 public class SearchEngine  :MonoBehaviour{
 
     public static SearchEngine instance; 
-	public int [,]Curposition = new int[10, 9];
-	public int NOCHESS = 0;
-	public int m_nMaxDepth;
-	public static int m_nSearchDepth=2;
-    public MoveSetting.CHESSMOVE m_cmBestMove;//存放最佳走法的变量
+	int [,]Curposition = new int[10, 9];
+    int m_nMaxDepth;//AI算法最大搜索深度
+	public static int m_nSearchDepth=1;//AI算法搜索深度
+    MoveSetting.CHESSMOVE m_cmBestMove;//存放最佳走法的变量
     //棋子基本价值
-    public int[] BaseValue = new int[15] { 0, 10000, 500, 350, 350, 250, 250, 100, 10000, 500, 350, 350, 250, 250, 100 };
+    int[] BaseValue = new int[15] { 0, 10000, 500, 350, 350, 250, 250, 100, 10000, 500, 350, 350, 250, 250, 100 };
     //棋子灵活性分数数组
-    public int[] FlexValue = new int[15]{
+    int[] FlexValue = new int[15]{
 		//che 6 ma 12 xiang 1 shi 1 pao 6 jiang 0 bing 15
 		0,0,6,12,6,1,1,15,0,6,12,6,1,1,15};
     //每个位置威胁信息
-    public int[,] AttackPos = new int[10, 9];
+    int[,] AttackPos = new int[10, 9];
     //存放每个位置被保护的信息
-    public int[,] GuardPos = new int[10, 9];
+    int[,] GuardPos = new int[10, 9];
     //存放每个位置上的棋子灵活性
-    public int[,] FlexibilityPos = new int[10, 9];
+    int[,] FlexibilityPos = new int[10, 9];
     //存放每个位置的棋子总价值
-    public int[,] chessValue = new int[10, 9];
+    int[,] chessValue = new int[10, 9];
     //记录棋子的相关位置个数
-    public int nPosCount;
+    int nPosCount;
     
     //用来统计调用了估值函数的也子节点次数
-    public int count = 0;
+    int count = 0;
     //实例化
 
     //红兵的附加值数组
-    public int[,] BA0 = new int [10,9]
+    int[,] BA0 = new int [10,9]
 	{
 		{0,0,0,0,0,0,0,0,0} ,
 		{90,90,110,120,120,120,110,90,90} ,
@@ -45,7 +44,7 @@ public class SearchEngine  :MonoBehaviour{
 		{0,0,0,0,0,0,0,0,0} ,
 	} ;
     //黑兵附加值数组
-    public int[,]  BA1 = new int [10,9]
+    int[,]  BA1 = new int [10,9]
 	{
 		{0,0,0,0,0,0,0,0,0} ,
 		{0,0,0,0,0,0,0,0,0} ,
@@ -99,7 +98,7 @@ public class SearchEngine  :MonoBehaviour{
 		//把棋子移动到目标位置
 		Curposition [move.To.y, move.To.x] =Curposition [move.From.y, move.From.x];
 		//将原位清空
-		Curposition [move.From.y, move.From.x] = NOCHESS;//清空原来位置
+		Curposition [move.From.y, move.From.x] = 0;//清空原来位置
 		//shuzi (Curposition);
 		return nChessID;//返回被吃掉的棋子
 	}
@@ -164,7 +163,6 @@ public class SearchEngine  :MonoBehaviour{
 		if (depth == m_nMaxDepth)
             m_cmBestMove = MoveSetting.instance.m_MoveList[depth, i];
 		for (i=1; i<Count; i++) {
-		//	StartCoroutine(Robot);
 			if(best<beta){
 				//如果不能被beta 剪枝
 				if(best<beta)
@@ -221,7 +219,7 @@ public class SearchEngine  :MonoBehaviour{
 	//position是要估值的棋盘
 	//bIsRedTurn轮倒水走棋的标志，true red  false black
 	//列举与指定位置棋子相关的棋子
-	public int Eveluate(int [,]position,bool bIsRedTum)
+	int Eveluate(int [,]position,bool bIsRedTum)
 	{
 		int i, j, k;
 		int nChessType, nTargetType;
@@ -246,7 +244,7 @@ public class SearchEngine  :MonoBehaviour{
 					else
 					{
 						//是棋子
-                        if (MoveSetting.instance.IsSameSide(nChessType, nTargetType))
+                        if (rules.instance.IsSameSide(nChessType, nTargetType))
 						{
 							//如果是己方棋子，目标受到保护
                             GuardPos[MoveSetting.instance.RelatePos[k].y, MoveSetting.instance.RelatePos[k].x]++;
@@ -310,7 +308,7 @@ public class SearchEngine  :MonoBehaviour{
 				nHalfvalue = BaseValue [nChessType]/16;
 				//把每个棋子的基本价值介入其总价值
 				chessValue [i,j]+=BaseValue [nChessType ];
-                if (MoveSetting.instance.IsRed(nChessType))//如果是红旗
+                if (rules.instance.IsRed(nChessType))//如果是红旗
 				{
 					if (AttackPos [i,j]!=0)//当前红棋如果被威胁
 					{
@@ -392,7 +390,7 @@ public class SearchEngine  :MonoBehaviour{
 			nChessType = position [i,j];
 			if (nChessType !=0 )//如果不是空白
 			{
-                if (MoveSetting.instance.IsRed(nChessType))  //如果是红旗
+                if (rules.instance.IsRed(nChessType))  //如果是红旗
 					nRedValue +=chessValue [i,j];//将这格棋子的价值加入到红旗价值当中
 				else
 					nBlackValue += chessValue [i,j];
@@ -410,7 +408,7 @@ public class SearchEngine  :MonoBehaviour{
 	
 	//列举与指定位置的棋子相关的棋子
 	//这个函数枚举了给定位上棋子的所有相关位置
-	public int GetRelatePiece(int [,]position,int j,int i ){
+	int GetRelatePiece(int [,]position,int j,int i ){
 		nPosCount = 0;
 		int nChessID;
 		//RelatePos = new Blackmove.CHESSMANPOS[30];
@@ -668,7 +666,7 @@ public class SearchEngine  :MonoBehaviour{
 		int nMoveChessID;//, nTargetID;
 		if (nFromX == nToX && nFromY == nToY)
 			return false;//目的与原相同
-		if (!rules.KingBye (position, nFromX, nFromY, nToX, nToY))
+        if (!rules.instance.KingBye(position, nFromX, nFromY, nToX, nToY))
 			return false;
 		nMoveChessID = position [nFromY, nFromX];
         //nTargetID = position [nToY, nToX];
