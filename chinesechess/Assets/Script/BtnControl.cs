@@ -8,7 +8,7 @@ public class BtnControl : MonoBehaviour
     public static bool isFirstStart = true;
     public static int ChessPeople = 1;//判断当前是人人象棋 还是人机
     // Use this for initialization
-    public GameObject BtnPosition,StartGame;
+    public GameObject BtnPosition;
     public GameObject difficultselect;
     
     void Awake()
@@ -24,6 +24,8 @@ public class BtnControl : MonoBehaviour
 
     public void BackMainScene()
     {
+        isFirstStart = true;
+        ChessPeople = 1;
         SceneManager.LoadScene("MainMenu");
     }
 

@@ -3,19 +3,18 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class ReStartChess : MonoBehaviour {
-	GameObject MisPosition;
-    Text NextTips;
+	
+    Text NextTips;//提示下一步谁走的信息
 	// Use this for initialization
 	void Start () {
-        NextTips = GameObject.Find("NextTips").GetComponent<Text>();
-        MisPosition = GameObject.Find("chessRobot");
+        NextTips = GameObject.Find("NextTips").GetComponent<Text>();        
 	}
     void Update()
     {
         NextTips.text = ChessControl.instance.NextPlayerTipStr;
     }
 
-	public void ChessPostion(){
+	public void ChessStart(){
         if (BtnControl.isFirstStart == true)
         {
             board.instance.ChessInit();
@@ -50,6 +49,7 @@ public class ReStartChess : MonoBehaviour {
             else
                 for (int i = BackStepChess.Count; i > 0; i--)
                     BackStepChess.instance.IloveHUIQI();
+            GameObject MisPosition = GameObject.Find("chessRobot");
             MisPosition.transform.localPosition = new Vector3(8888, 8888, 0);
         }
     }

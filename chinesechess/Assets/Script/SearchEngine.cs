@@ -88,7 +88,7 @@ public class SearchEngine  :MonoBehaviour{
         instance = this;
     }
     
-	//根据传入的走法                                  改变棋盘
+	//根据传入的走法改变棋盘
 	//move是要进行的走法
 	//public int[,] CurPosition = new int[10, 9]; 
     int MakeMove(MoveSetting.CHESSMOVE move)
@@ -144,7 +144,7 @@ public class SearchEngine  :MonoBehaviour{
 
 	}
 
-
+    //Alpha-beta 剪枝算法
 	int PrincipalVariation(int depth,int alpha,int beta)
 	{
 		int score;
@@ -408,7 +408,7 @@ public class SearchEngine  :MonoBehaviour{
 	
 	//列举与指定位置的棋子相关的棋子
 	//这个函数枚举了给定位上棋子的所有相关位置
-	int GetRelatePiece(int [,]position,int j,int i ){
+	void GetRelatePiece(int [,]position,int j,int i ){
 		nPosCount = 0;
 		int nChessID;
 		//RelatePos = new Blackmove.CHESSMANPOS[30];
@@ -655,8 +655,6 @@ public class SearchEngine  :MonoBehaviour{
 		default:
 			break;
 		}
-
-		return nPosCount;
 	}
 
 	//判断from 位置能否走到to

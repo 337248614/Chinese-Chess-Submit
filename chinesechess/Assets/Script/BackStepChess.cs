@@ -8,7 +8,7 @@ public class BackStepChess :MonoBehaviour{
     bool IsOnePersonWin= false;//如果现在是用户胜利，点击悔棋
 	public  QIZI[]pos = new QIZI[400];//将对弈的过程存储起来
 
-	public static int Count;//统计的步数初始化为0
+	public static int Count=0;//统计的步数初始化为0
 
     void Start() 
     {
@@ -39,7 +39,8 @@ public class BackStepChess :MonoBehaviour{
         GameObject item2 = ChessControl.instance.PosGetChess(tox, toy);//得到第二个框名字
 		//如果是吃子
         GameObject firstChess = item1.transform.GetChild(0).gameObject;//得到第一个旗子名字
-        GameObject scondeChess = item2.transform.GetChild(0).gameObject;//得到第二个棋子名字
+        GameObject scondeChess = null;//得到第二个棋子名字
+        if (item2.transform.childCount != 0) scondeChess = item2.transform.GetChild(0).gameObject;
 		pos [count].From.x = fromx;
 		pos [count].From.y = fromy;
 		pos [count].To.x = tox;
@@ -47,6 +48,7 @@ public class BackStepChess :MonoBehaviour{
 		pos [count].obj1 = item1;
 		pos [count].obj2 = item2;
 		pos [count].objfrist = firstChess;
+        if (scondeChess!=null)
 		pos [count].objsconde = scondeChess;
 		pos [count].BlackOrRed = IsTrueOrfalse;//判断当前是红吃黑还是黑吃红
 		pos [count].ChessID.x = ID1;
@@ -54,13 +56,32 @@ public class BackStepChess :MonoBehaviour{
 		Count++;
 	}
 
-
+    //得到第一个旗子名字
+    public GameObject chessOne(GameObject obj)
+    {
+        string s = "";
+        GameObject game = null;
+        foreach (Transform child in obj.transform)
+            s = child.name;//第一个象棋名字
+        game = GameObject.Find(s);
+        return game;
+    }
+    //得到第二个旗子名字
+    public GameObject ChessTwo(GameObject obj)
+    {
+        string s = "";
+        GameObject game = null;
+        foreach (Transform child in obj.transform)
+            s = child.name;//第二个象棋名字
+        game = GameObject.Find(s);
+        return game;
+    }
 	
 
 	//开始悔棋功能了		
 	public void IloveHUIQI()
     {
-
+        if (Count <= 0) return;
         GameObject obj = GameObject.Find("chessRobot");
 		obj.transform.localPosition = new Vector3 (8888, 8888, 0);
 		for(int i=1;i<=90;i++)
