@@ -119,6 +119,7 @@ public class ChessControl : MonoBehaviour {
 					return;
 				}
                 if (ChessMove == false) {
+                    NextPlayerTipStr = "黑方在思考中";
                     Invoke("threm", 0.2f);
                 }
 			//执行走棋
@@ -194,8 +195,8 @@ public class ChessControl : MonoBehaviour {
 					BlackName=null;
 					return;
 				}
-                if (ChessMove == false) { 
-                    //threm();
+                if (ChessMove == false) {
+                    NextPlayerTipStr = "黑方在思考中";
                     Invoke("threm", 0.2f);
                 }
             }
