@@ -1,17 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using System;
 public class BackStepChess :MonoBehaviour{
 
     public static BackStepChess instance; 
 
     bool IsOnePersonWin= false;//如果现在是用户胜利，点击悔棋
 	public  QIZI[]pos = new QIZI[400];//将对弈的过程存储起来
-
 	public static int Count=0;//统计的步数初始化为0
 
     void Start() 
-    {
+    {        
         instance = this;
     }
 
@@ -56,32 +55,18 @@ public class BackStepChess :MonoBehaviour{
 		Count++;
 	}
 
-    //得到第一个旗子名字
-    public GameObject chessOne(GameObject obj)
-    {
-        string s = "";
-        GameObject game = null;
-        foreach (Transform child in obj.transform)
-            s = child.name;//第一个象棋名字
-        game = GameObject.Find(s);
-        return game;
-    }
-    //得到第二个旗子名字
-    public GameObject ChessTwo(GameObject obj)
-    {
-        string s = "";
-        GameObject game = null;
-        foreach (Transform child in obj.transform)
-            s = child.name;//第二个象棋名字
-        game = GameObject.Find(s);
-        return game;
-    }
+
 	
 
 	//开始悔棋功能了		
 	public void IloveHUIQI()
     {
-        if (Count <= 0) return;
+        if (Count <= 0) {
+            Count = 0;
+            IsOnePersonWin = false;
+            Array.Clear(pos,0,pos.Length);
+            return; 
+        }
         GameObject obj = GameObject.Find("chessRobot");
 		obj.transform.localPosition = new Vector3 (8888, 8888, 0);
 		for(int i=1;i<=90;i++)
