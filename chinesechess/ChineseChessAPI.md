@@ -49,15 +49,15 @@ clickItemOrChess  | 无| void | 点击棋子或者棋盘事件
 StartGameViewClear        | 无| void | 开始游戏清除界面
 InitChessView        | int[,] | void | 初始化棋盘界面
 SetPiecePos        | 无| void | 生成棋盘格子
-InitPiece        | string sql, GameObject game, string name, int count| void | 生成象棋的棋子
-ChessGoStepView        | MoveSetting.CHESSMANPOS pos| void | 走一步棋的界面UI控制
+InitPiece        | string,GameObject,string,int| void | 生成象棋的棋子
+ChessGoStepView        | MoveSetting.CHESSMANPOS| void | 走一步棋的界面UI控制
 HUIQI_View        | 无| void | 悔棋界面控制
 AIGoStepView        | 无| void |AI走一步棋的界面UI控制 
-ClickChessMoveDraw        | int fromx, int fromy| void | 将选择的棋子可以走的位置绘制出来
-GetClickItemPos        | GameObject ClickItem| MoveSetting.CHESSMANPOS | 通过Gameobject获取位置信息
-PosGetChess        | int PosX, int PoxY| GameObject |通过位置信息获取Gameobject AI走一步棋的界面UI控制
+ClickChessMoveDraw        |int, int| void | 将选择的棋子可以走的位置绘制出来
+GetClickItemPos        | GameObject|MoveSetting.CHESSMANPOS | 通过Gameobject获取位置信息
+PosGetChess        | int, int| GameObject |通过位置信息获取Gameobject AI走一步棋的界面UI控制
 JiangJunCheck        | 无| void | 判断将和帅是否被将军了
-SetTipsText        | string NextPlayerTipStr| void | 设置文字提示
+SetTipsText        | string| void | 设置文字提示
 JiangJunCheck        | 无| void | 清除棋盘上可走路线的提示
 
 ## BackStepChess类
@@ -76,11 +76,11 @@ IloveHUIQI   | 无| void | 悔棋功能
 
 函数名 | 参数 | 返回值类型 | 功能
 ---|---|---|---
-IsBlack   | int PieceNum| bool | 判断一个棋子是不是黑色
-IsRed   | int PieceNum| bool | 判断一个棋子是不是红色
-IsSameSide   | int int PieceNumX, int PieceNumY| bool | 判断两个棋子是不是同颜色
-KingBye   | int [,]CHESS,int FromX,int FromY,int ToX,int ToY| bool | 让王不能会面
-IsValidMove   | int [,]position, int FromX,int FromY,int ToX,int ToY| bool |判断该步棋符不符合规则
+IsBlack   | int| bool | 判断一个棋子是不是黑色
+IsRed   | int| bool | 判断一个棋子是不是红色
+IsSameSide   | int, int| bool | 判断两个棋子是不是同颜色
+KingBye   | int [,],int,int,int,int| bool | 让王不能会面
+IsValidMove   | int [,], int,int,int,int| bool |判断该步棋符不符合规则
 
 ## ChessControl类
 属性名 | 类型 | 功能
@@ -93,7 +93,7 @@ IsSelectChess   |bool | 判断是否选择了棋子
 
 函数名 | 参数 | 返回值类型 | 功能
 ---|---|---|---
-ChessGoStep   | MoveSetting.CHESSMANPOS pos| void | 走一步棋
+ChessGoStep   | MoveSetting.CHESSMANPOS| void | 走一步棋
 threm   | 无| void | 调用AI进行下一步棋的计算并且进行界面的修改
 
 ## SearchEngine类
@@ -104,5 +104,5 @@ m_nSearchDepth   |int | AI算法最大搜索深度
 
 函数名 | 参数 | 返回值类型 | 功能
 ---|---|---|---
-PrincipalVariation   | MoveSetting.CHESSMANPOS pos| void | Alpha-beta 剪枝算法
-SearchAGoodMove   | int[,] position| MoveSetting.CHESSMOVE | 调用AI进行下一步棋的计算并且进行界面的修改
+PrincipalVariation   | MoveSetting.CHESSMANPOS| void | Alpha-beta 剪枝算法
+SearchAGoodMove   | int[,]| MoveSetting.CHESSMOVE | 调用AI进行下一步棋的计算并且进行界面的修改
