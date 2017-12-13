@@ -402,7 +402,6 @@ public class SearchEngine  :MonoBehaviour{
 			return nBlackValue - nRedValue;//轮到黑棋走返回估值的相反数
 		}
 
-		
 	}
 	
 	

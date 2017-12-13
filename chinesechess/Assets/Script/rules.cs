@@ -2,102 +2,7 @@
 using System.Collections;
 public class rules  {
     public static rules instance=new rules();
-
-    int Jiang_x, Jiang_y, Shuai_x, Shuai_y;
-
-    //得到将和帅的坐标
-    void IsPosition()
-    {
-        for (int i = 0; i < 3; i++)
-            for (int j = 3; j < 6; j++)
-                if (board.instance.chess[i, j] == 1)
-                {
-                    Jiang_x = j;
-                    Jiang_y = i;
-                }
-        for (int i = 3; i < 6; i++)
-            for (int j = 7; j < 10; j++)
-                if (board.instance.chess[j, i] == 8)
-                {
-                    Shuai_x = i;
-                    Shuai_y = j;
-                }
-    }
-
-    //判断将和帅是否被将军了
-    public void JiangJunCheck()
-    {
-        IsPosition();
-        if (board.instance.chess[Jiang_y, Jiang_x] != 1)
-        {
-            //			blackclick.CanMove = false;
-            ChessControl.instance.NextPlayerTipStr = "红色棋子胜利";
-            ChessControl.instance.TrueOrFalse = false;
-            return;
-        }
-        else if (board.instance.chess[Shuai_y, Shuai_x] != 8)
-        {
-            //		blackclick.CanMove = false;
-            ChessControl.instance.NextPlayerTipStr = "黑色棋子胜利";
-            ChessControl.instance.TrueOrFalse = false;
-            return;
-        }
-        bool BOL;//bool 值
-        for (int i = 0; i < 9; i++)
-        {
-            for (int j = 0; j < 10; j++)
-            {
-                switch (board.instance.chess[j, i])
-                {
-                    case 2:
-                        BOL = rules.instance.IsValidMove(board.instance.chess, i, j, Shuai_x, Shuai_y);
-                        if (BOL)
-                            ChessControl.instance.NextPlayerTipStr = "帅被車将军了";
-
-                        break;
-                    case 3:
-                        BOL = rules.instance.IsValidMove(board.instance.chess, i, j, Shuai_x, Shuai_y);
-                        if (BOL)
-                            ChessControl.instance.NextPlayerTipStr = "帅被马将军了";
-                        break;
-                    case 4:
-                        BOL = rules.instance.IsValidMove(board.instance.chess, i, j, Shuai_x, Shuai_y);
-                        if (BOL)
-                            ChessControl.instance.NextPlayerTipStr = "帅被炮将军了";
-                        break;
-
-                    case 7:
-                        BOL = rules.instance.IsValidMove(board.instance.chess, i, j, Shuai_x, Shuai_y);
-                        if (BOL)
-                            ChessControl.instance.NextPlayerTipStr = "帅被兵将军了";
-                        break;
-                    case 9:
-                        BOL = rules.instance.IsValidMove(board.instance.chess, i, j, Jiang_x, Jiang_y);
-                        if (BOL)
-                            ChessControl.instance.NextPlayerTipStr = "将被車将军了";
-                        break;
-                    case 10:
-                        BOL = rules.instance.IsValidMove(board.instance.chess, i, j, Jiang_x, Jiang_y);
-                        if (BOL)
-                            ChessControl.instance.NextPlayerTipStr = "将被马将军了";
-                        break;
-                    case 11:
-                        BOL = rules.instance.IsValidMove(board.instance.chess, i, j, Jiang_x, Jiang_y);
-                        if (BOL)
-                            ChessControl.instance.NextPlayerTipStr = "将被炮将军了";
-                        break;
-                    case 14:
-                        BOL = rules.instance.IsValidMove(board.instance.chess, i, j, Jiang_x, Jiang_y);
-                        if (BOL)
-                            ChessControl.instance.NextPlayerTipStr = "将被兵将军了";
-                        break;
-                }
-            }
-        }
-
-    }
-
-	//让王不能会面
+    //判断一个棋子是不是黑色
     public bool IsBlack(int PieceNum)
     {
         if (PieceNum > 0 && PieceNum < 8)
@@ -123,7 +28,7 @@ public class rules  {
 		else
 			return false;
 	}
-	//public int [,] CHESS1 = new int[10, 9];//定义一个数组
+	//让王不能会面
 	public  bool KingBye(int [,]CHESS,int FromX,int FromY,int ToX,int ToY){
 		//假设法
 		int Count=0, jiangx=0, jiangy=0, shuaix=0, shuaiy=0;
@@ -164,7 +69,6 @@ public class rules  {
 	
 	}
 	//所有棋子的走棋规则
-	//type =false 黑色走棋,true 红色走
 	public  bool IsValidMove(int [,]position, int FromX,int FromY,int ToX,int ToY){	
 		int i=0, j=0;
 
@@ -173,8 +77,6 @@ public class rules  {
 		nTargetID = position [ToY, ToX];//得到移动后的棋子
 		if (FromY == ToY && FromX == ToX) //目的与原相同
 			return false;
-        //int ChessOne = board.chess[FromY,FromX];
-        //int ChessTwo = board.chess [ToY, ToX];
 		if (IsSameSide (nMoveChessID, nTargetID)) 
 			return false;
 		if (!KingBye (position,FromX, FromY, ToX, ToY))

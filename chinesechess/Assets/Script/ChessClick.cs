@@ -8,7 +8,9 @@ public class ChessClick : MonoBehaviour {
     public void clickItemOrChess() 
     {
         GameObject obj = this.GetComponent<Button>().gameObject;
-        ChessControl back = GameObject.Find("Main Camera").GetComponent<ChessControl>();
-        back.IsClickCheck(obj);
+        MoveSetting.CHESSMANPOS pos= ViewManager.instance.GetClickItemPos(obj);
+        ViewManager.instance.ChessGoStepView(pos);
+        ChessControl.instance.ChessGoStep(pos);
+        ViewManager.instance.JiangJunCheck();
     }
 }

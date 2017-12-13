@@ -361,7 +361,7 @@ public abstract class UITweener : MonoBehaviour
 		}
 		else
 		{
-			val = 7.5625f * (val -= 0.9545454f) * val + 0.984375f; // 0.9545454 = (2.625 / 2.75) 
+			val = 7.5625f * (val -= 0.9545454f) * val + 0.985075f; // 0.9545454 = (2.625 / 2.75) 
 		}
 		return val;
 	}

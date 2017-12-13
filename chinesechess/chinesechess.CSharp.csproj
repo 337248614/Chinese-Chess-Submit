@@ -370,11 +370,10 @@
     <Compile Include="Assets\Script\BtnControl.cs" />
     <Compile Include="Assets\Script\ChessClick.cs" />
     <Compile Include="Assets\Script\ChessControl.cs" />
-    <Compile Include="Assets\Script\IMoveSetting.cs" />
     <Compile Include="Assets\Script\MoveSetting.cs" />
-    <Compile Include="Assets\Script\ReStartChess.cs" />
     <Compile Include="Assets\Script\rules.cs" />
     <Compile Include="Assets\Script\SearchEngine.cs" />
+    <Compile Include="Assets\Script\ViewManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\NGUI\Examples\Atlases\Fantasy\Fantasy Font - Normal.txt" />

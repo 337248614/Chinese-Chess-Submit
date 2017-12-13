@@ -1646,7 +1646,7 @@ http://www.tasharen.com/forum/index.php?topic=11.msg27296#msg27296
 - FIX: UICamera will now always set the 'lastCamera' to be the camera that received the pressed event while the touch is held.
 - FIX: UIDragObject will now drag tilted objects (windows) with a more expected result.
 
-1.43:
+1.50:
 - NEW: Added the Input template to the Widget Tool.
 - NEW: UIButtonMessage will now pass the button's game object as an optional parameter.
 - NEW: Tweener will now pass itself as a parameter to the callWhenFinished function.
@@ -1678,7 +1678,7 @@ http://www.tasharen.com/forum/index.php?topic=11.msg27296#msg27296
 - NEW: With the new system, moving, rotating and scaling panels no longer causes widgets they're responsible for to be rebuilt.
 - NEW: Panel clipping will now actually clip widgets, eliminating them from the draw buffers until they move back into view.
 - NEW: Matrix parameter has been eliminated from the clip shaders as it's no longer needed with the new system.
-- FIX: Work-around for a rare obscure issue caused by a bug in Unity related to instantiating widgets from prefabs (Case 439372).
+- FIX: Work-around for a rare obscure issue caused by a bug in Unity related to instantiating widgets from prefabs (Case 509372).
 - FIX: It's no longer possible to edit widgets directly on prefabs. Bring them into the scene first.
 - FIX: Panel tool will now update itself on object selection.
 
