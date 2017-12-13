@@ -105,4 +105,4 @@ m_nSearchDepth   |int | AI算法最大搜索深度
 函数名 | 参数 | 返回值类型 | 功能
 ---|---|---|---
 PrincipalVariation   | MoveSetting.CHESSMANPOS| void | Alpha-beta 剪枝算法
-SearchAGoodMove   | int[,]| MoveSetting.CHESSMOVE | 调用AI进行下一步棋的计算并且进行界面的修改
+SearchAGoodMove   | int[,]| MoveSetting.CHESSMOVE | 调用AI进行下一步棋的计算
