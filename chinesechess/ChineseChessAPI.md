@@ -15,7 +15,7 @@ OnDifficultSelect | 无| void | 难度选择下拉菜单
 ## MoveSetting类
 
 属性名 | 类型 | 功能
----|---|---|---|---
+---|---|---
 CHESSMANPOS        | void | 定义一个棋子位置的结构体
 CHESSMOVE          | void | 单人模式按钮
 
