@@ -12,10 +12,11 @@ SetUpBtn          | 无| void | 设置按钮
 GameOverBtn       | 无| void | 退出游戏按钮
 BackStepBtn       | 无| void | 悔棋按钮
 OnDifficultSelect | 无| void | 难度选择下拉菜单
+
 ## MoveSetting类
 
 属性名 | 类型 | 功能
----|---|---|---|---
+---|---|---
 CHESSMANPOS        | void | 定义一个棋子位置的结构体
 CHESSMOVE          | void | 单人模式按钮
 
@@ -104,5 +105,10 @@ m_nSearchDepth   |int | AI算法最大搜索深度
 
 函数名 | 参数 | 返回值类型 | 功能
 ---|---|---|---
+<<<<<<< HEAD
 PrincipalVariation   | MoveSetting.CHESSMANPOS| void | Alpha-beta 剪枝算法
 SearchAGoodMove   | int[,]| MoveSetting.CHESSMOVE | 调用AI进行下一步棋的计算并且进行界面的修改
+=======
+PrincipalVariation   | MoveSetting.CHESSMANPOS pos| void | Alpha-beta 剪枝算法
+SearchAGoodMove   | int[,] position| MoveSetting.CHESSMOVE | 调用AI进行下一步棋的计算并且进行界面的修改
+>>>>>>> 231cc984d5596aafcfdb9d94ba2eba0fd0ef4561
