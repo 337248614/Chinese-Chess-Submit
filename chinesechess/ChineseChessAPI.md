@@ -12,6 +12,7 @@ SetUpBtn          | 无| void | 设置按钮
 GameOverBtn       | 无| void | 退出游戏按钮
 BackStepBtn       | 无| void | 悔棋按钮
 OnDifficultSelect | 无| void | 难度选择下拉菜单
+
 ## MoveSetting类
 
 属性名 | 类型 | 功能
