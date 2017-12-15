@@ -365,12 +365,13 @@
     <Compile Include="Assets\NGUI\Scripts\UI\UITexture.cs" />
     <Compile Include="Assets\NGUI\Scripts\UI\UITooltip.cs" />
     <Compile Include="Assets\NGUI\Scripts\UI\UIViewport.cs" />
-    <Compile Include="Assets\Script\BackStepChess.cs" />
     <Compile Include="Assets\Script\board.cs" />
     <Compile Include="Assets\Script\BtnControl.cs" />
     <Compile Include="Assets\Script\ChessClick.cs" />
     <Compile Include="Assets\Script\ChessControl.cs" />
-    <Compile Include="Assets\Script\MoveSetting.cs" />
+    <Compile Include="Assets\Script\DifficultyModel.cs" />
+    <Compile Include="Assets\Script\GameModel.cs" />
+    <Compile Include="Assets\Script\IChineseChess.cs" />
     <Compile Include="Assets\Script\rules.cs" />
     <Compile Include="Assets\Script\SearchEngine.cs" />
     <Compile Include="Assets\Script\ViewManager.cs" />

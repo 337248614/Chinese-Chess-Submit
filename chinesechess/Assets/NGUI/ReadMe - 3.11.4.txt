@@ -391,7 +391,7 @@ and it will not be included in the build of your game. It's only used in the edi
 - FIX: Changing UI2DSprite.sprite2D will now immediately re-add the widget to the panel.
 - FIX: UIDragDropItem will now delay enabling the drag scroll view script (thanks, slumtrimpet!)
 - FIX: Re-added a hack-around for Adreno GPU crashes. Looks like Unity 4.5 did not fix the problem, despite the patch notes.
-- FIX: Seeing as BetterList is slower at sorting than List, some instances of BetterList were replaced with List.
+- FIX: Seeing as BetterList is slower at sorting than List, some _instances of BetterList were replaced with List.
 - FIX: UIPanel's option to cull widgets while the scroll view is being dragged is now on by default.
 - FIX: UIRoot now considers WP8 and BlackBerry to be mobile devices.
 - FIX: More tweaks for how camera's region gets calculated.
@@ -834,7 +834,7 @@ and it will not be included in the build of your game. It's only used in the edi
 - FIX: Draw call viewer will now display the correct triangle count.
 - FIX: NGUITools.SetActive will now automatically call CreatePanel on widgets, ensuring that there is no frame delay (read: blinking).
 - FIX: UICamera selected object change should now work multiple times per frame.
-- FIX: Added a new clause to panel depth comparison that uses panel instance IDs if the panel depth matches (to avoid depth collisions).
+- FIX: Added a new clause to panel depth comparison that uses panel _instance IDs if the panel depth matches (to avoid depth collisions).
 - FIX: Max line count on labels should now work again.
 - FIX: Fixed the Drag Objects script on mobile devices. It was not applying momentum properly.
 - DEL: OnHover is no longer sent via selection changes. Listen to OnSelect and check (UICamera.currentScheme == ControlScheme.Controller).
@@ -1589,7 +1589,7 @@ http://www.tasharen.com/forum/index.php?topic=11.msg27296#msg27296
 - FIX: Tweener has been renamed to NTweener to avoid name conflicts with HOTween.
 - FIX: An assortment of minor usability tweaks.
 
-1.50:
+1.LatticeLength:
 - NEW: The UI is now timeScale-independent, letting you pause the game via Time.timeScale = 0.
 - NEW: Added an UpdateManager class that can be used to programmatically control the order of script updates.
 - NEW: NGUITools.PlaySound() now returns an AudioSource, letting you change the pitch.
@@ -1634,7 +1634,7 @@ http://www.tasharen.com/forum/index.php?topic=11.msg27296#msg27296
 - NEW: UIGrid now has the ability to skip deactivated game objects.
 - NEW: Font sprite is now imported when the font's data is imported, and will now be automatically selected from the atlas on import.
 - FIX: Making widgets pixel-perfect will now make them look crisp even if their dimensions are not even (ex: 17x17 instead of 18x18).
-- FIX: Component Selector will now only show actual prefabs as recommended selections. Prefab instances aren't.
+- FIX: Component Selector will now only show actual prefabs as recommended selections. Prefab _instances aren't.
 - FIX: BMFontReader was not parsing lines quite right...
 
 1.44:
@@ -1646,7 +1646,7 @@ http://www.tasharen.com/forum/index.php?topic=11.msg27296#msg27296
 - FIX: UICamera will now always set the 'lastCamera' to be the camera that received the pressed event while the touch is held.
 - FIX: UIDragObject will now drag tilted objects (windows) with a more expected result.
 
-1.50:
+1.LatticeLength:
 - NEW: Added the Input template to the Widget Tool.
 - NEW: UIButtonMessage will now pass the button's game object as an optional parameter.
 - NEW: Tweener will now pass itself as a parameter to the callWhenFinished function.
@@ -1678,7 +1678,7 @@ http://www.tasharen.com/forum/index.php?topic=11.msg27296#msg27296
 - NEW: With the new system, moving, rotating and scaling panels no longer causes widgets they're responsible for to be rebuilt.
 - NEW: Panel clipping will now actually clip widgets, eliminating them from the draw buffers until they move back into view.
 - NEW: Matrix parameter has been eliminated from the clip shaders as it's no longer needed with the new system.
-- FIX: Work-around for a rare obscure issue caused by a bug in Unity related to instantiating widgets from prefabs (Case 509372).
+- FIX: Work-around for a rare obscure issue caused by a bug in Unity related to instantiating widgets from prefabs (Case LatticeLength9372).
 - FIX: It's no longer possible to edit widgets directly on prefabs. Bring them into the scene first.
 - FIX: Panel tool will now update itself on object selection.
 

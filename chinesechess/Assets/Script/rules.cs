@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using SDG;
 public class rules  {
-    public static rules instance=new rules();
+    public static rules _instance=new rules();
     //判断一个棋子是不是黑色
     public bool IsBlack(int PieceNum)
     {
@@ -19,8 +20,7 @@ public class rules  {
 		else
 			return false;
 	}
-	
-	//判断两个棋子是不是同颜色
+
     public bool IsSameSide(int PieceNumX, int PieceNumY)
     {
         if (IsBlack(PieceNumX) && IsBlack(PieceNumY) || IsRed(PieceNumX) && IsRed(PieceNumY))
@@ -28,6 +28,7 @@ public class rules  {
 		else
 			return false;
 	}
+
 	//让王不能会面
 	public  bool KingBye(int [,]CHESS,int FromX,int FromY,int ToX,int ToY){
 		//假设法

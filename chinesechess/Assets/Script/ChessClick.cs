@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using SDG;
 
 public class ChessClick : MonoBehaviour {
 
     public void clickItemOrChess() 
     {
         GameObject obj = this.GetComponent<Button>().gameObject;
-        MoveSetting.CHESSMANPOS pos= ViewManager.instance.GetClickItemPos(obj);
-        ViewManager.instance.ChessGoStepView(pos);
-        ChessControl.instance.ChessGoStep(pos);
-        ViewManager.instance.JiangJunCheck();
+        ChessPosition pos= ViewManager._instance.GetClickItemPos(obj);
+        ViewManager._instance.ChessGoStepView(pos);
     }
 }

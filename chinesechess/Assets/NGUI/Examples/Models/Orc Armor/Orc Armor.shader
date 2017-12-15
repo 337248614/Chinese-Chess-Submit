@@ -34,7 +34,7 @@ Shader "NGUI/Examples/Orc Armor"
 		half4 LightingPPL (SurfaceOutput s, half3 lightDir, half3 viewDir, half atten)
 		{
 			half3 nNormal = normalize(s.Normal);
-			half shininess = s.Gloss * 250.0 + 4.0;
+			half shininess = s.Gloss * 2LatticeLength.0 + 4.0;
 
 		#ifndef USING_DIRECTIONAL_LIGHT
 			lightDir = normalize(lightDir);

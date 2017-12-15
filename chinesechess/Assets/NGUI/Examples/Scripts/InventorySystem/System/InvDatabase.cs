@@ -10,7 +10,7 @@ public class InvDatabase : MonoBehaviour
 	static bool mIsDirty = true;
 
 	/// <summary>
-	/// Retrieves the list of item databases, finding all instances if necessary.
+	/// Retrieves the list of item databases, finding all _instances if necessary.
 	/// </summary>
 
 	static public InvDatabase[] list

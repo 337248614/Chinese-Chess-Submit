@@ -13,7 +13,7 @@ public class InvAttachmentPoint : MonoBehaviour
 	GameObject mChild;
 
 	/// <summary>
-	/// Attach an instance of the specified game object.
+	/// Attach an _instance of the specified game object.
 	/// </summary>
 
 	public GameObject Attach (GameObject prefab)
@@ -28,7 +28,7 @@ public class InvAttachmentPoint : MonoBehaviour
 			// If we have something to create, let's do so now
 			if (mPrefab != null)
 			{
-				// Create a new instance of the game object
+				// Create a new _instance of the game object
 				Transform t = transform;
 				mChild = Instantiate(mPrefab, t.position, t.rotation) as GameObject;
 

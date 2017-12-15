@@ -13,7 +13,7 @@ using UnityEngine;
 [AddComponentMenu("NGUI/Examples/UI Cursor")]
 public class UICursor : MonoBehaviour
 {
-	static public UICursor instance;
+	static public UICursor _instance;
 
 	// Camera used to draw this cursor
 	public Camera uiCamera;
@@ -25,11 +25,11 @@ public class UICursor : MonoBehaviour
 	string mSpriteName;
 
 	/// <summary>
-	/// Keep an instance reference so this class can be easily found.
+	/// Keep an _instance reference so this class can be easily found.
 	/// </summary>
 
-	void Awake () { instance = this; }
-	void OnDestroy () { instance = null; }
+	void Awake () { _instance = this; }
+	void OnDestroy () { _instance = null; }
 
 	/// <summary>
 	/// Cache the expected components and starting values.
@@ -97,8 +97,8 @@ public class UICursor : MonoBehaviour
 
 	static public void Clear ()
 	{
-		if (instance != null && instance.mSprite != null)
-			Set(instance.mAtlas, instance.mSpriteName);
+		if (_instance != null && _instance.mSprite != null)
+			Set(_instance.mAtlas, _instance.mSpriteName);
 	}
 
 	/// <summary>
@@ -107,12 +107,12 @@ public class UICursor : MonoBehaviour
 
 	static public void Set (UIAtlas atlas, string sprite)
 	{
-		if (instance != null && instance.mSprite)
+		if (_instance != null && _instance.mSprite)
 		{
-			instance.mSprite.atlas = atlas;
-			instance.mSprite.spriteName = sprite;
-			instance.mSprite.MakePixelPerfect();
-			instance.Update();
+			_instance.mSprite.atlas = atlas;
+			_instance.mSprite.spriteName = sprite;
+			_instance.mSprite.MakePixelPerfect();
+			_instance.Update();
 		}
 	}
 }

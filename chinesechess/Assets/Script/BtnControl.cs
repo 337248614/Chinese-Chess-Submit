@@ -3,67 +3,62 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using SDG;
 public class BtnControl : MonoBehaviour
 {
+    public static bool _isFirstStart = true;
     //判断当前是人人象棋 还是人机
-    public static bool isFirstStart = true;
-    //判断当前是人人象棋 还是人机
-    public static int ChessPeople = 1;
-    public GameObject BtnPosition;
-    public GameObject difficultselect;
-    
-    void Awake()
+    public static GameModel _gameModel;
+    public GameObject _btnPosition;
+    public GameObject _difficultSelect;
+    void Start()
     {
         //把难度选择 和 new label  隐藏  人人对战的时候
-        SearchEngine.m_nSearchDepth = 1;
-        if (ChessPeople == 2)
+        ChessControl._instance._difficultyModel = DifficultyModel.easy;
+        if (_gameModel==GameModel.PersonVSPerson)
         {
-            difficultselect.SetActive(false);
-            Vector3 UIpos = BtnPosition.transform.localPosition;
-            BtnPosition.transform.localPosition = new Vector3(UIpos.x, UIpos.y + 70, UIpos.z);
+            _difficultSelect.SetActive(false);
+            Vector3 UIpos = _btnPosition.transform.localPosition;
+            _btnPosition.transform.localPosition = new Vector3(UIpos.x, UIpos.y + 70, UIpos.z);
         }
     }
     //返回主菜单按钮
     public void BackMainScene()
     {
-        isFirstStart = true;
-        ChessPeople = 1;
+        _isFirstStart = true;
+        _gameModel = GameModel.PersonVSAi;
         SceneManager.LoadScene("MainMenu");
     }
 
     //单人模式按钮
     public void OnePeopleModel()
     {
-        ChessPeople = 1;
+        _gameModel = GameModel.PersonVSAi;
         SceneManager.LoadScene("ChessToMe");
-        board.start = true;
-        isFirstStart = true;
+        _isFirstStart = true;
 	}
     //双人模式按钮
     public void TwoPeopleModel()
     {
-        ChessPeople = 2;
+        _gameModel = GameModel.PersonVSPerson;
         SceneManager.LoadScene("ChessToMe");
-        board.start = true;
-        isFirstStart = true;
+        _isFirstStart = true;
     }
     //开始游戏按钮
     public void StartGameBtn()
     {
-        if (BtnControl.isFirstStart)
+        if (BtnControl._isFirstStart)
         {
-            board.instance.ChessInit();
-            ViewManager.instance.InitChessView(board.instance.chess);
-            BtnControl.isFirstStart = false;
+            ViewManager._instance.InitChessView();
+            BtnControl._isFirstStart = false;
         }
         else
         {
-            while (BackStepChess.instance.BackChessList.Count >0)
+            while (ChessControl._instance.ChessMoveList.Count > 0)
             {
-                ViewManager.instance.HUIQI_View();
-                BackStepChess.instance.IloveHUIQI();
+                ViewManager._instance.BackStepView();
             }
-            ViewManager.instance.StartGameViewClear();
+            ViewManager._instance.StartGameViewClear();
         }
     }
     //设置按钮
@@ -79,11 +74,38 @@ public class BtnControl : MonoBehaviour
     //悔棋按钮
     public void BackStepBtn() 
     {
-        if (BackStepChess.instance.BackChessList.Count == 0) return;
-        
+        if (ChessControl._instance.ChessMoveList.Count == 0) return;
+        ViewManager._instance.BackStepView();
     }
     //难度选择按钮
     public void OnDifficultSelect() {
-        SearchEngine.m_nSearchDepth = difficultselect.GetComponent<Dropdown>().value+1;
+        int DropDwonVlaue = _difficultSelect.GetComponent<Dropdown>().value;
+        switch (DropDwonVlaue)
+        {
+            case 0: 
+                {
+                    ChessControl._instance._difficultyModel = DifficultyModel.easy;
+                }
+                break;
+            case 1:
+                {
+                    ChessControl._instance._difficultyModel = DifficultyModel.middle;
+                }
+                break;
+            case 2:
+                {
+                    ChessControl._instance._difficultyModel = DifficultyModel.difficult;
+                }
+                break;
+            default:
+                break;
+        }
+        ChessControl._instance.SetChessModel(ChessControl._instance._difficultyModel);
     }
+
+
+
+
+
+
 }
