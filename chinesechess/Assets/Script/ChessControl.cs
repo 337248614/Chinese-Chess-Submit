@@ -39,13 +39,18 @@ namespace SDG
         public List<ChessMove> ChessMoveList = new List<ChessMove>();//将对弈的过程存储起来
 
 
-        //调用AI进行下一步棋的计算并且进行界面的修改
- 
-        int[,] InitChessBoard()
+        //进行棋盘的初始化
+        public void InitChessBoard()
         {
-            int[,] chessBoard = board._instance.chess;
-            return chessBoard;
+            board._instance.ChessInit();
+            
         }
+        //设置游戏模式
+        public void SetGameModel(GameModel gamemodel) 
+        {
+            _gameModel = gamemodel;
+        }
+        //移动或吃棋子
         public bool MoveOrEatChess(ChessPosition TempPosFrom, ChessPosition TempPosTo)
         {
             int _fromX = TempPosFrom.x;
@@ -62,7 +67,7 @@ namespace SDG
                 return true;
             }
         }
-
+        //根据选择的棋子返回可走的位置
         public List<ChessPosition> ChessCanMove(ChessPosition pos)
         {
             int fromx = pos.x;
@@ -107,7 +112,195 @@ namespace SDG
             }
             return chessPositionList;
         }
+        //获取AI搜索的结果
+        public ChessMove GetAiMove()
+        {
+            SearchEngine.Move move =SearchEngine._instance.SearchAGoodMove(board._instance.chess);
+            ChessPosition posFrom = new ChessPosition(move.From.x, move.From.y);
+            ChessPosition posTo = new ChessPosition(move.To.x, move.To.y);
+            ChessMove chessmove = new ChessMove(posFrom, posTo);
+            return chessmove; 
+        }
+        //判断是否结束游戏
+        public bool isGameOver(int[,] position)
+        {
+            bool RedLive = false, BlackLive = false;
+            for (int i = 3; i < 6; i++) { 
+                for (int j = 0; j < 3; j++)
+                {
+                    if (position[j, i] == 1)
+                        BlackLive = true;
+                }
+            }
+            for (int i = 3; i < 6; i++){
+                for (int j = 7; j < 10; j++)
+                {
+                    if (position[j, i] == 8)
+                        RedLive = true;
+                }
+            }
+            return RedLive && BlackLive;
+        }
+        //判断是否是红方胜
+        public bool IsRedWin(int[,] position)
+        {
+            bool BlackLive = false;
+            for (int i = 3; i < 6; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    if (position[j, i] == 1)
+                        BlackLive = true;
+                }
+            }
+            return !BlackLive;
+        }
+        //判断是否是黑方胜
+        public bool IsBlackWin(int[,] position)
+        {
+            bool RedLive = false;
+            for (int i = 3; i < 6; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    if (position[j, i] == 1)
+                        RedLive = true;
+                }
+            }
+            return !RedLive;
+        }
+        //设置AI游戏难度
+        public void SetChessModel(DifficultyModel level)
+        {
+            switch (level)
+	        {
+                case DifficultyModel.easy     : SearchEngine._searchDepth = 1; break;
+                case DifficultyModel.middle   : SearchEngine._searchDepth = 2; break;
+                case DifficultyModel.difficult: SearchEngine._searchDepth = 3; break;
+                default: break;
+	        }
+        }
+        //检测是否被将军
+        public int KingAttackCheck()
+        {
+            ChessPosition blackKing = GetBlackKingPosition();
+            ChessPosition redKing = GetRedKingPosition();
+            int _jiang_X = blackKing.x;
+            int _jiang_Y = blackKing.y;
+            int _shuai_X = redKing.x;
+            int _shuai_Y = redKing.y;
+            if (board._instance.chess[_jiang_Y, _jiang_X] != 1)
+            {
+                return -1;
+            }
+            else if (board._instance.chess[_shuai_Y, _shuai_X] != 8)
+            {
+                return -1;
+            }
+            bool BOL;//bool 值
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 10; j++)
+                {
+                    switch (board._instance.chess[j, i])
+                    {
+                        case 2:
+                            BOL = rules._instance.IsValidMove(board._instance.chess, i, j, _shuai_X, _shuai_Y);
+                            if (BOL)
+                                return 2;
 
+                            break;
+                        case 3:
+                            BOL = rules._instance.IsValidMove(board._instance.chess, i, j, _shuai_X, _shuai_Y);
+                            if (BOL)
+                                return 3;
+                            break;
+                        case 4:
+                            BOL = rules._instance.IsValidMove(board._instance.chess, i, j, _shuai_X, _shuai_Y);
+                            if (BOL)
+                                return 4;
+                            break;
+
+                        case 7:
+                            BOL = rules._instance.IsValidMove(board._instance.chess, i, j, _shuai_X, _shuai_Y);
+                            if (BOL)
+                                return 7;
+                            break;
+                        case 9:
+                            BOL = rules._instance.IsValidMove(board._instance.chess, i, j, _jiang_X, _jiang_Y);
+                            if (BOL)
+                                return 9;
+                            break;
+                        case 10:
+                            BOL = rules._instance.IsValidMove(board._instance.chess, i, j, _jiang_X, _jiang_Y);
+                            if (BOL)
+                                return 10;
+                            break;
+                        case 11:
+                            BOL = rules._instance.IsValidMove(board._instance.chess, i, j, _jiang_X, _jiang_Y);
+                            if (BOL)
+                                return 11;
+                            break;
+                        case 14:
+                            BOL = rules._instance.IsValidMove(board._instance.chess, i, j, _jiang_X, _jiang_Y);
+                            if (BOL)
+                                return 14;
+                            break;
+                    }
+                }
+            }
+            return 0;
+
+        }
+        //开始悔棋功能了并返回该走的棋子位置的变换
+        public ChessMove BackStep()
+        {
+            int fromx, fromy, tox, toy;            
+            int length = ChessMoveList.Count;
+
+            fromx = ChessMoveList[length - 1].From.x;
+            fromy = ChessMoveList[length - 1].From.y;
+            tox = ChessMoveList[length - 1].To.x;
+            toy = ChessMoveList[length - 1].To.y;
+
+            ChessPosition TempPosFrom = ChessMoveList[length - 1].To;
+            ChessPosition TempPosTo = ChessMoveList[length - 1].From;
+            ChessMove move = new ChessMove(TempPosFrom, TempPosTo);
+            board._instance.chess[fromy, fromx] = ChessMoveList[length - 1].FromChessNum;
+            board._instance.chess[toy, tox] = ChessMoveList[length - 1].ToChessNum;
+            ChessMoveList.RemoveAt(length - 1);
+            return move;
+        }
+        void AddChessList(ChessPosition TempPosFrom, ChessPosition TempPosTo)
+        {
+            ChessMove TempBack = new ChessMove(TempPosFrom,TempPosTo);
+            ChessMoveList.Add(TempBack);
+        }
+        //得到将和帅的坐标
+        ChessPosition GetBlackKingPosition()
+        {
+            int x=0, y=0;
+            for (int j = 0; j < 3; j++)
+                for (int i = 3; i < 6; i++)
+                    if (board._instance.chess[j, i] == 1)
+                    {
+                        x = i; y = j;
+                    }
+            ChessPosition pos = new ChessPosition(x,y);
+            return pos;
+        }
+        ChessPosition GetRedKingPosition()
+        {
+            int x=0, y=0;
+            for (int j = 7; j < 10; j++)
+             for (int i = 3; i < 6; i++)
+                    if (board._instance.chess[j, i] == 8)
+                    {
+                         x=i;y=j;
+                    }
+            ChessPosition pos = new ChessPosition(x,y);
+            return pos;
+        }
         //得到将的走法
         void Gen_KingMove(List<ChessPosition> chessPositionList, int[,] position, int j, int i)
         {//两个参数 fromx  和fromy
@@ -499,219 +692,6 @@ namespace SDG
                 ChessPosition pos = new ChessPosition(x,y);
                 chessPositionList.Add(pos);
             }
-        }
-
-        public ChessMove GetAiMove()
-        {
-            SearchEngine.Move move =SearchEngine._instance.SearchAGoodMove(board._instance.chess);
-            ChessPosition posFrom = new ChessPosition(move.From.x, move.From.y);
-            ChessPosition posTo = new ChessPosition(move.To.x, move.To.y);
-            ChessMove chessmove = new ChessMove(posFrom, posTo);
-            return chessmove; 
-        }
-
-        public bool isGameOver(int[,] position)
-        {
-            bool RedLive = false, BlackLive = false;
-            for (int i = 3; i < 6; i++) { 
-                for (int j = 0; j < 3; j++)
-                {
-                    if (position[j, i] == 1)
-                        BlackLive = true;
-                }
-            }
-            for (int i = 3; i < 6; i++){
-                for (int j = 7; j < 10; j++)
-                {
-                    if (position[j, i] == 8)
-                        RedLive = true;
-                }
-            }
-            return RedLive && BlackLive;
-        }
-
-        public bool IsRedWin(int[,] position)
-        {
-            bool BlackLive = false;
-            for (int i = 3; i < 6; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
-                    if (position[j, i] == 1)
-                        BlackLive = true;
-                }
-            }
-            return !BlackLive;
-        }
-        public bool IsBlackWin(int[,] position)
-        {
-            bool RedLive = false;
-            for (int i = 3; i < 6; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
-                    if (position[j, i] == 1)
-                        RedLive = true;
-                }
-            }
-            return !RedLive;
-        }
-
-        public void SetChessModel(DifficultyModel level)
-        {
-            switch (level)
-	        {
-                case DifficultyModel.easy     : SearchEngine._searchDepth = 1; break;
-                case DifficultyModel.middle   : SearchEngine._searchDepth = 2; break;
-                case DifficultyModel.difficult: SearchEngine._searchDepth = 3; break;
-                default: break;
-	        }
-        }
-        //将走的棋存储到ChessMoveList中
-        void AddChessList(ChessPosition TempPosFrom, ChessPosition TempPosTo)
-        {
-            ChessMove TempBack = new ChessMove(TempPosFrom,TempPosTo);
-            ChessMoveList.Add(TempBack);
-        }
-        //开始悔棋功能了并返回该走的棋子位置的变换		
-        public ChessMove BackStep()
-        {
-            int fromx, fromy, tox, toy;            
-            int length = ChessMoveList.Count;
-
-            fromx = ChessMoveList[length - 1].From.x;
-            fromy = ChessMoveList[length - 1].From.y;
-            tox = ChessMoveList[length - 1].To.x;
-            toy = ChessMoveList[length - 1].To.y;
-
-            ChessPosition TempPosFrom = ChessMoveList[length - 1].To;
-            ChessPosition TempPosTo = ChessMoveList[length - 1].From;
-            ChessMove move = new ChessMove(TempPosFrom, TempPosTo);
-            board._instance.chess[fromy, fromx] = ChessMoveList[length - 1].FromChessNum;
-            board._instance.chess[toy, tox] = ChessMoveList[length - 1].ToChessNum;
-            ChessMoveList.RemoveAt(length - 1);
-            return move;
-        }
-        public bool IsRed(ChessPosition pos)
-        {
-            int PieceNum = board._instance.chess[pos.y, pos.x];
-            if (PieceNum >= 8 && PieceNum < 15)
-                return true;
-            else
-                return false;
-        }
-        public bool IsBlack(ChessPosition pos)
-        {
-            int PieceNum = board._instance.chess[pos.y, pos.x];
-            if (PieceNum > 0 && PieceNum < 8)
-                return true;
-            else
-                return false;
-        }
-        //判断两个棋子是不是同颜色
-        public bool IsSameSide(ChessPosition posx, ChessPosition posy)
-        {
-            if (IsBlack(posx) && IsBlack(posy) || IsRed(posx) && IsRed(posy))
-                return true;
-            else
-                return false;
-        }
-
-        public int KingAttackCheck()
-        {
-            ChessPosition blackKing = GetBlackKingPosition();
-            ChessPosition redKing = GetRedKingPosition();
-            int _jiang_X = blackKing.x;
-            int _jiang_Y = blackKing.y;
-            int _shuai_X = redKing.x;
-            int _shuai_Y = redKing.y;
-            if (board._instance.chess[_jiang_Y, _jiang_X] != 1)
-            {
-                return -1;
-            }
-            else if (board._instance.chess[_shuai_Y, _shuai_X] != 8)
-            {
-                return -1;
-            }
-            bool BOL;//bool 值
-            for (int i = 0; i < 9; i++)
-            {
-                for (int j = 0; j < 10; j++)
-                {
-                    switch (board._instance.chess[j, i])
-                    {
-                        case 2:
-                            BOL = rules._instance.IsValidMove(board._instance.chess, i, j, _shuai_X, _shuai_Y);
-                            if (BOL)
-                                return 2;
-
-                            break;
-                        case 3:
-                            BOL = rules._instance.IsValidMove(board._instance.chess, i, j, _shuai_X, _shuai_Y);
-                            if (BOL)
-                                return 3;
-                            break;
-                        case 4:
-                            BOL = rules._instance.IsValidMove(board._instance.chess, i, j, _shuai_X, _shuai_Y);
-                            if (BOL)
-                                return 4;
-                            break;
-
-                        case 7:
-                            BOL = rules._instance.IsValidMove(board._instance.chess, i, j, _shuai_X, _shuai_Y);
-                            if (BOL)
-                                return 7;
-                            break;
-                        case 9:
-                            BOL = rules._instance.IsValidMove(board._instance.chess, i, j, _jiang_X, _jiang_Y);
-                            if (BOL)
-                                return 9;
-                            break;
-                        case 10:
-                            BOL = rules._instance.IsValidMove(board._instance.chess, i, j, _jiang_X, _jiang_Y);
-                            if (BOL)
-                                return 10;
-                            break;
-                        case 11:
-                            BOL = rules._instance.IsValidMove(board._instance.chess, i, j, _jiang_X, _jiang_Y);
-                            if (BOL)
-                                return 11;
-                            break;
-                        case 14:
-                            BOL = rules._instance.IsValidMove(board._instance.chess, i, j, _jiang_X, _jiang_Y);
-                            if (BOL)
-                                return 14;
-                            break;
-                    }
-                }
-            }
-            return 0;
-
-        }
-        //得到将和帅的坐标
-        ChessPosition GetBlackKingPosition()
-        {
-            int x=0, y=0;
-            for (int j = 0; j < 3; j++)
-                for (int i = 3; i < 6; i++)
-                    if (board._instance.chess[j, i] == 1)
-                    {
-                        x = i; y = j;
-                    }
-            ChessPosition pos = new ChessPosition(x,y);
-            return pos;
-        }
-        ChessPosition GetRedKingPosition()
-        {
-            int x=0, y=0;
-            for (int j = 7; j < 10; j++)
-             for (int i = 3; i < 6; i++)
-                    if (board._instance.chess[j, i] == 8)
-                    {
-                         x=i;y=j;
-                    }
-            ChessPosition pos = new ChessPosition(x,y);
-            return pos;
         }
     }
 }

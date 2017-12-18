@@ -369,9 +369,9 @@
     <Compile Include="Assets\Script\BtnControl.cs" />
     <Compile Include="Assets\Script\ChessClick.cs" />
     <Compile Include="Assets\Script\ChessControl.cs" />
+    <Compile Include="Assets\Script\ChineseChessApi.cs" />
     <Compile Include="Assets\Script\DifficultyModel.cs" />
     <Compile Include="Assets\Script\GameModel.cs" />
-    <Compile Include="Assets\Script\IChineseChess.cs" />
     <Compile Include="Assets\Script\rules.cs" />
     <Compile Include="Assets\Script\SearchEngine.cs" />
     <Compile Include="Assets\Script\ViewManager.cs" />
