@@ -49,7 +49,7 @@ public class ViewManager : MonoBehaviour {
             GameObject obj = GameObject.Find("item" + i.ToString());
             int x = GetClickItemPos(obj).x;
             int y = GetClickItemPos(obj).y;
-            switch (board._instance.chess[y, x])
+            switch (board.chess[y, x])
             {
                 case 1:
                     count++;
@@ -125,7 +125,7 @@ public class ViewManager : MonoBehaviour {
             b.name = "item" + i.ToString();                                           //suoyou所有的深度 都是5
             b.transform.localPosition = new Vector3(xx, yy, 0);
             xx += LatticeLength;
-            if (xx >= LatticeLength * board._instance.chess.GetLength(1))
+            if (xx >= LatticeLength * board.chess.GetLength(1))
             {
                 yy -= LatticeLength;
                 xx = 0;
@@ -155,7 +155,7 @@ public class ViewManager : MonoBehaviour {
             int toy   = pos.y;
             ChessPosition posFrom = new ChessPosition(_selectPosition.x, _selectPosition.y);
             ChessPosition posTo = new ChessPosition(pos.x, pos.y);            
-            if (board._instance.chess[toy, tox] == 0)
+            if (board.chess[toy, tox] == 0)
             {
                 if (ChessControl._instance.MoveOrEatChess(posFrom, posTo)) {
                     MoveChessView(posFrom, posTo);
@@ -169,7 +169,7 @@ public class ViewManager : MonoBehaviour {
             }
             else
             {
-                bool isSame = rules._instance.IsSameSide(board._instance.chess[toy, tox], board._instance.chess[posFrom.y, posFrom.x]);
+                bool isSame = rules._instance.IsSameSide(board.chess[toy, tox], board.chess[posFrom.y, posFrom.x]);
                 if (isSame)
                 {
                     ChessCanMoveView(pos);
@@ -194,7 +194,7 @@ public class ViewManager : MonoBehaviour {
         }
         else
         {
-            if (board._instance.chess[pos.y, pos.x] != 0)
+            if (board.chess[pos.y, pos.x] != 0)
             {
                 ChessCanMoveView(pos);
             }
@@ -218,15 +218,15 @@ public class ViewManager : MonoBehaviour {
     }
     void ChessCanMoveView(ChessPosition pos)
     {
-        if (!_redMove && board._instance.chess[pos.y, pos.x] > 8) return;
-        if (_redMove && board._instance.chess[pos.y, pos.x] < 8) return;
+        if (!_redMove && board.chess[pos.y, pos.x] > 8) return;
+        if (_redMove && board.chess[pos.y, pos.x] < 8) return;
         //if (_redSelectPic != null) _redSelectPic.SetActive(false);
         _selectPosition= pos;
         _isSelectChess = true;
         List<ChessPosition> listpos = ChessControl._instance.ChessCanMove(pos);
         for (int i = 0; i < listpos.Count; i++)
         {
-            GetPrefabs(board._instance.chess, listpos[i].x, listpos[i].y);
+            GetPrefabs(board.chess, listpos[i].x, listpos[i].y);
         }
         SetSelectPic(pos);
     }
@@ -355,7 +355,7 @@ public class ViewManager : MonoBehaviour {
             {
                 GameObject obj = GameObject.Find("chess");
                 GameObject ite;
-                if (board._instance.chess[y, x] == 0)
+                if (board.chess[y, x] == 0)
                     ite = (GameObject)GameObject.Instantiate(Resources.Load("canmove"));
                 else
                 {
@@ -407,9 +407,9 @@ public class ViewManager : MonoBehaviour {
                     case -1:
                         {
                             _isCanMove = false;
-                            if (ChessControl._instance.IsBlackWin(board._instance.chess)) 
+                            if (ChessControl._instance.IsBlackWin()) 
                                 SetTipsText("黑方胜利");
-                            if (ChessControl._instance.IsRedWin(board._instance.chess))
+                            if (ChessControl._instance.IsRedWin())
                                 SetTipsText("红方胜利");
                         } 
                         break;

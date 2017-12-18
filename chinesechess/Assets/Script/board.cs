@@ -5,7 +5,7 @@ using SDG;
 public class board 
 {
     public static board _instance=new board();
-    public int[,] chess ;
+    public static int[,] chess;
 
     public void ChessInit()
     {
