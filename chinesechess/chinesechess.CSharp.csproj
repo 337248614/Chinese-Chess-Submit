@@ -374,6 +374,7 @@
     <Compile Include="Assets\Script\GameModel.cs" />
     <Compile Include="Assets\Script\rules.cs" />
     <Compile Include="Assets\Script\SearchEngine.cs" />
+    <Compile Include="Assets\Script\View.cs" />
     <Compile Include="Assets\Script\ViewManager.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -58,7 +58,7 @@ public class BtnControl : MonoBehaviour
             {
                 ViewManager._instance.BackStepView();
             }
-            ViewManager._instance.StartGameViewClear();
+            ViewManager._instance.StartGameClearView();
         }
     }
     //设置按钮

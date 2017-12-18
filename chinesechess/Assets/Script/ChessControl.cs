@@ -15,8 +15,8 @@ namespace SDG
         public  ChessMove(ChessPosition _from, ChessPosition _to) {
             From = _from;
             To = _to;
-            FromChessNum = board._instance.chess[_from.y, _from.x];
-            ToChessNum = board._instance.chess[_to.y, _to.x];
+            FromChessNum = board.chess[_from.y, _from.x];
+            ToChessNum = board.chess[_to.y, _to.x];
         }
     }
     public class ChessPosition
@@ -57,13 +57,13 @@ namespace SDG
             int _fromY = TempPosFrom.y;
             int _toX = TempPosTo.x;
             int _toY = TempPosTo.y;
-            bool ba = rules._instance.IsValidMove(board._instance.chess, _fromX, _fromY, _toX, _toY);
+            bool ba = rules._instance.IsValidMove(board.chess, _fromX, _fromY, _toX, _toY);
             if (!ba) return false;
             else
             {
                 AddChessList(TempPosFrom, TempPosTo);
-                board._instance.chess[_toY, _toX] = board._instance.chess[_fromY, _fromX];
-                board._instance.chess[_fromY, _fromX] = 0;
+                board.chess[_toY, _toX] = board.chess[_fromY, _fromX];
+                board.chess[_fromY, _fromX] = 0;
                 return true;
             }
         }
@@ -73,41 +73,41 @@ namespace SDG
             int fromx = pos.x;
             int fromy = pos.y;
             List<ChessPosition> chessPositionList = new List<ChessPosition>();
-            int ChessID = board._instance.chess[fromy, fromx];
+            int ChessID = board.chess[fromy, fromx];
             switch (ChessID)
             {
                 case 1:
                 case 8:
-                    Gen_KingMove(chessPositionList, board._instance.chess, fromx, fromy);
+                    Gen_KingMove(chessPositionList, board.chess, fromx, fromy);
                     break;
                 case 2:
                 case 9:
-                    Gen_CarMove(chessPositionList, board._instance.chess, fromx, fromy);
+                    Gen_CarMove(chessPositionList, board.chess, fromx, fromy);
                     break;
                 case 3:
                 case 10:
-                    Gen_HorseMove(chessPositionList, board._instance.chess, fromx, fromy);
+                    Gen_HorseMove(chessPositionList, board.chess, fromx, fromy);
                     break;
                 case 4:
                 case 11:
-                    Gen_CanonMove(chessPositionList, board._instance.chess, fromx, fromy);
+                    Gen_CanonMove(chessPositionList, board.chess, fromx, fromy);
                     break;
                 case 5://黑士
-                    Gen_BBishopMove(chessPositionList, board._instance.chess, fromx, fromy);
+                    Gen_BBishopMove(chessPositionList, board.chess, fromx, fromy);
                     break;
                 case 6://黑象
                 case 13://红相
-                    Gen_ElephantMove(chessPositionList, board._instance.chess, fromx, fromy);
+                    Gen_ElephantMove(chessPositionList, board.chess, fromx, fromy);
                     break;
                 case 7://黑兵
-                    Gen_BPawnMove(chessPositionList, board._instance.chess, fromx, fromy);
+                    Gen_BPawnMove(chessPositionList, board.chess, fromx, fromy);
                     break;
                 case 12://红shi
-                    Gen_RBishopMove(chessPositionList, board._instance.chess, fromx, fromy);
+                    Gen_RBishopMove(chessPositionList, board.chess, fromx, fromy);
                     break;
 
                 case 14://红兵
-                    Gen_RPawnMove(chessPositionList, board._instance.chess, fromx, fromy);
+                    Gen_RPawnMove(chessPositionList, board.chess, fromx, fromy);
                     break;
             }
             return chessPositionList;
@@ -115,15 +115,16 @@ namespace SDG
         //获取AI搜索的结果
         public ChessMove GetAiMove()
         {
-            SearchEngine.Move move =SearchEngine._instance.SearchAGoodMove(board._instance.chess);
+            SearchEngine.Move move =SearchEngine._instance.SearchAGoodMove(board.chess);
             ChessPosition posFrom = new ChessPosition(move.From.x, move.From.y);
             ChessPosition posTo = new ChessPosition(move.To.x, move.To.y);
             ChessMove chessmove = new ChessMove(posFrom, posTo);
             return chessmove; 
         }
         //判断是否结束游戏
-        public bool isGameOver(int[,] position)
+        public bool isGameOver()
         {
+            int[,] position = board.chess;
             bool RedLive = false, BlackLive = false;
             for (int i = 3; i < 6; i++) { 
                 for (int j = 0; j < 3; j++)
@@ -142,8 +143,9 @@ namespace SDG
             return RedLive && BlackLive;
         }
         //判断是否是红方胜
-        public bool IsRedWin(int[,] position)
+        public bool IsRedWin()
         {
+            int[,] position = board.chess;
             bool BlackLive = false;
             for (int i = 3; i < 6; i++)
             {
@@ -156,8 +158,9 @@ namespace SDG
             return !BlackLive;
         }
         //判断是否是黑方胜
-        public bool IsBlackWin(int[,] position)
+        public bool IsBlackWin()
         {
+            int[,] position = board.chess;
             bool RedLive = false;
             for (int i = 3; i < 6; i++)
             {
@@ -189,11 +192,11 @@ namespace SDG
             int _jiang_Y = blackKing.y;
             int _shuai_X = redKing.x;
             int _shuai_Y = redKing.y;
-            if (board._instance.chess[_jiang_Y, _jiang_X] != 1)
+            if (board.chess[_jiang_Y, _jiang_X] != 1)
             {
                 return -1;
             }
-            else if (board._instance.chess[_shuai_Y, _shuai_X] != 8)
+            else if (board.chess[_shuai_Y, _shuai_X] != 8)
             {
                 return -1;
             }
@@ -202,47 +205,47 @@ namespace SDG
             {
                 for (int j = 0; j < 10; j++)
                 {
-                    switch (board._instance.chess[j, i])
+                    switch (board.chess[j, i])
                     {
                         case 2:
-                            BOL = rules._instance.IsValidMove(board._instance.chess, i, j, _shuai_X, _shuai_Y);
+                            BOL = rules._instance.IsValidMove(board.chess, i, j, _shuai_X, _shuai_Y);
                             if (BOL)
                                 return 2;
 
                             break;
                         case 3:
-                            BOL = rules._instance.IsValidMove(board._instance.chess, i, j, _shuai_X, _shuai_Y);
+                            BOL = rules._instance.IsValidMove(board.chess, i, j, _shuai_X, _shuai_Y);
                             if (BOL)
                                 return 3;
                             break;
                         case 4:
-                            BOL = rules._instance.IsValidMove(board._instance.chess, i, j, _shuai_X, _shuai_Y);
+                            BOL = rules._instance.IsValidMove(board.chess, i, j, _shuai_X, _shuai_Y);
                             if (BOL)
                                 return 4;
                             break;
 
                         case 7:
-                            BOL = rules._instance.IsValidMove(board._instance.chess, i, j, _shuai_X, _shuai_Y);
+                            BOL = rules._instance.IsValidMove(board.chess, i, j, _shuai_X, _shuai_Y);
                             if (BOL)
                                 return 7;
                             break;
                         case 9:
-                            BOL = rules._instance.IsValidMove(board._instance.chess, i, j, _jiang_X, _jiang_Y);
+                            BOL = rules._instance.IsValidMove(board.chess, i, j, _jiang_X, _jiang_Y);
                             if (BOL)
                                 return 9;
                             break;
                         case 10:
-                            BOL = rules._instance.IsValidMove(board._instance.chess, i, j, _jiang_X, _jiang_Y);
+                            BOL = rules._instance.IsValidMove(board.chess, i, j, _jiang_X, _jiang_Y);
                             if (BOL)
                                 return 10;
                             break;
                         case 11:
-                            BOL = rules._instance.IsValidMove(board._instance.chess, i, j, _jiang_X, _jiang_Y);
+                            BOL = rules._instance.IsValidMove(board.chess, i, j, _jiang_X, _jiang_Y);
                             if (BOL)
                                 return 11;
                             break;
                         case 14:
-                            BOL = rules._instance.IsValidMove(board._instance.chess, i, j, _jiang_X, _jiang_Y);
+                            BOL = rules._instance.IsValidMove(board.chess, i, j, _jiang_X, _jiang_Y);
                             if (BOL)
                                 return 14;
                             break;
@@ -266,8 +269,8 @@ namespace SDG
             ChessPosition TempPosFrom = ChessMoveList[length - 1].To;
             ChessPosition TempPosTo = ChessMoveList[length - 1].From;
             ChessMove move = new ChessMove(TempPosFrom, TempPosTo);
-            board._instance.chess[fromy, fromx] = ChessMoveList[length - 1].FromChessNum;
-            board._instance.chess[toy, tox] = ChessMoveList[length - 1].ToChessNum;
+            board.chess[fromy, fromx] = ChessMoveList[length - 1].FromChessNum;
+            board.chess[toy, tox] = ChessMoveList[length - 1].ToChessNum;
             ChessMoveList.RemoveAt(length - 1);
             return move;
         }
@@ -282,7 +285,7 @@ namespace SDG
             int x=0, y=0;
             for (int j = 0; j < 3; j++)
                 for (int i = 3; i < 6; i++)
-                    if (board._instance.chess[j, i] == 1)
+                    if (board.chess[j, i] == 1)
                     {
                         x = i; y = j;
                     }
@@ -294,7 +297,7 @@ namespace SDG
             int x=0, y=0;
             for (int j = 7; j < 10; j++)
              for (int i = 3; i < 6; i++)
-                    if (board._instance.chess[j, i] == 8)
+                    if (board.chess[j, i] == 8)
                     {
                          x=i;y=j;
                     }

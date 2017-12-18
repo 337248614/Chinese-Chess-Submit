@@ -26,19 +26,19 @@ public class ChineseChessApi  {
         return ChessControl._instance.GetAiMove();
     }
     //判断是否结束游戏
-    public bool isGameOver(int[,] position) 
+    public bool isGameOver() 
     {
-        return ChessControl._instance.isGameOver(position);
+        return ChessControl._instance.isGameOver();
     }
     //判断是否是红方胜
-    public bool IsRedWin(int[,] position) 
+    public bool IsRedWin() 
     {
-        return ChessControl._instance.IsRedWin(position);
+        return ChessControl._instance.IsRedWin();
     }
     //判断是否是黑方胜
-    public bool IsBlackWin(int[,] position)
+    public bool IsBlackWin()
     {
-        return ChessControl._instance.IsBlackWin(position);
+        return ChessControl._instance.IsBlackWin();
     }
     //设置AI游戏难度
     public void SetChessModel(DifficultyModel level) 

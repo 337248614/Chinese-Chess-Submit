@@ -9,7 +9,7 @@ public class ChessClick : MonoBehaviour {
     public void clickItemOrChess() 
     {
         GameObject obj = this.GetComponent<Button>().gameObject;
-        ChessPosition pos= ViewManager._instance.GetClickItemPos(obj);
+        ChessPosition pos= View._instance.GetClickItemPos(obj);
         ViewManager._instance.ChessGoStepView(pos);
     }
 }
