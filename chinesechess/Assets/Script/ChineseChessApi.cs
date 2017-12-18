@@ -20,7 +20,7 @@ public class ChineseChessApi  {
     { 
         return ChessControl._instance.MoveOrEatChess(TempPosFrom, TempPosTo);
     }
-    //获取AI搜索的结果
+    //获取AI计算的棋子变换结果
     public ChessMove GetAiMove()
     {
         return ChessControl._instance.GetAiMove();
