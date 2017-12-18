@@ -1,108 +1,57 @@
 # Chinese Chess
-## BtnControl类
+## ChineseChessApi
 
-
-函数名 |参数| 返回值类型 | 功能
+函数名 | 参数 | 返回值类型 | 功能
 ---|---|---|---
-BackMainScene     | 无| void | 返回主菜单按钮
-OnePeopleModel    | 无| void | 单人模式按钮
-TwoPeopleModel    | 无| void | 双人模式按钮
-StartGameBtn      | 无| void | 开始游戏按钮
-SetUpBtn          | 无| void | 设置按钮
-GameOverBtn       | 无| void | 退出游戏按钮
-BackStepBtn       | 无| void | 悔棋按钮
-OnDifficultSelect | 无| void | 难度选择下拉菜单
-## MoveSetting类
+ChessInit   | 无| void | 进行棋盘的初始化
+     //用二维数组表示棋盘。对棋子进行编号，0表示没有棋子，1-14依次是将，黑车，黑马，黑炮，黑士，黑象，黑卒，红帅，红车，红马，红炮，红士，红相，红兵
+     {  
+			{2 ,3 ,6 ,5 ,1 ,5 ,6 ,3 ,2 },
+			{0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 },
+			{0 ,4 ,0 ,0 ,0 ,0 ,0 ,4 ,0 },
+			{7 ,0 ,7 ,0 ,7 ,0 ,7 ,0 ,7 },
+			{0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 },
+			{0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 },
+			{14,0 ,14,0 ,14,0 ,14,0 ,14},
+			{0 ,11,0 ,0 ,0 ,0 ,0 ,11,0 },
+			{0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 },
+			{9 ,10,13,12,8 ,12,13,10,9 }
+		}
+函数名 | 参数 | 返回值类型 | 功能
+---|---|---|---
+SetGameModel   | 无| void | 设置游戏模式
+MoveOrEatChess   | ChessPosition，ChessPosition| bool | 移动或吃棋子可以移动返回true
+GetAiMove   | 无| ChessMove | 获取AI计算的棋子变换结果
+isGameOver   | int[,]| bool | 判断是否结束游戏
+IsRedWin   | int[,]| bool | 判断是否是红方胜
+IsBlackWin   | int[,]| bool | 判断是否是红方胜
+SetChessModel   | DifficultyModel| void | 设置AI游戏难度
+BackStep   | ChessMove| void | 悔棋功能并返回该走的棋子位置的变换
+KingAttackCheck   | int| void | 检测是否被将军，如果被将军返回将军的棋子的编号
+ChessCanMove   | List<ChessPosition>| ChessPosition | 选择棋子之后得到棋子可以走的位置
 
-属性名 | 类型 | 功能
+## DifficultyModel
+枚举类型名称 |含义
+---|---
+easy|简单模式
+middle|中等难度模式
+difficult|困难模式
+
+## GameModel
+枚举类型名称 |含义
+---|---
+PersonVSAi|人机模式
+PersonVSPerson|人人模式
+
+## ChessPosition
+属性名称 |类型|含义
 ---|---|---
-CHESSMANPOS        | void | 定义一个棋子位置的结构体
-CHESSMOVE          | void | 单人模式按钮
-
-
-函数名 | 参数 | 返回值类型 | 功能
----|---|---|---
-CreatePossibleMove | 无| void | 选定的棋子所有合法的走法
-
-## Board类
-属性名 | 类型 | 功能
+x|int|数组中的位置下标
+y|int|数组中的位置下标
+## ChessMove
+属性名称 |类型|含义
 ---|---|---
-chess   |int[,] | 定义一个棋子位置的结构体
-
-
-函数名 | 参数 | 返回值类型 | 功能
----|---|---|---
-ChessInit   | 无| void | 初始化棋盘
-
-## ChessClickL类
-
-
-函数名 | 参数 | 返回值类型 | 功能
----|---|---|---
-clickItemOrChess  | 无| void | 点击棋子或者棋盘事件
-
-## ViewManager类
-
-
-函数名 | 参数 | 返回值类型 | 功能
----|---|---|---
-StartGameViewClear        | 无| void | 开始游戏清除界面
-InitChessView        | int[,] | void | 初始化棋盘界面
-SetPiecePos        | 无| void | 生成棋盘格子
-InitPiece        | string,GameObject,string,int| void | 生成象棋的棋子
-ChessGoStepView        | MoveSetting.CHESSMANPOS| void | 走一步棋的界面UI控制
-HUIQI_View        | 无| void | 悔棋界面控制
-AIGoStepView        | 无| void |AI走一步棋的界面UI控制 
-ClickChessMoveDraw        |int, int| void | 将选择的棋子可以走的位置绘制出来
-GetClickItemPos        | GameObject|MoveSetting.CHESSMANPOS | 通过Gameobject获取位置信息
-PosGetChess        | int, int| GameObject |通过位置信息获取Gameobject AI走一步棋的界面UI控制
-JiangJunCheck        | 无| void | 判断将和帅是否被将军了
-SetTipsText        | string| void | 设置文字提示
-JiangJunCheck        | 无| void | 清除棋盘上可走路线的提示
-
-## BackStepChess类
-属性名 | 类型 | 功能
----|---|---
-HUIQIposition   |struct | 定义一个棋子位置的结构体
-BackChess   |struct | 存储每一步棋的位置信息
-
-
-函数名 | 参数 | 返回值类型 | 功能
----|---|---|---
-AddChessList   | 无| void | 将每一步下的棋存储起来
-IloveHUIQI   | 无| void | 悔棋功能
-
-## rules类
-
-函数名 | 参数 | 返回值类型 | 功能
----|---|---|---
-IsBlack   | int| bool | 判断一个棋子是不是黑色
-IsRed   | int| bool | 判断一个棋子是不是红色
-IsSameSide   | int, int| bool | 判断两个棋子是不是同颜色
-KingBye   | int [,],int,int,int,int| bool | 让王不能会面
-IsValidMove   | int [,], int,int,int,int| bool |判断该步棋符不符合规则
-
-## ChessControl类
-属性名 | 类型 | 功能
----|---|---
-RedMove   |bool | 判断是红方走还是黑方走
-IsCanMove   |bool | 判断这个时候输赢状态能否走棋
-posthread   |bool | 判断线程里面的内容是否执行完毕
-IsSelectChess   |bool | 判断是否选择了棋子
-
-
-函数名 | 参数 | 返回值类型 | 功能
----|---|---|---
-ChessGoStep   | MoveSetting.CHESSMANPOS| void | 走一步棋
-threm   | 无| void | 调用AI进行下一步棋的计算并且进行界面的修改
-
-## SearchEngine类
-属性名 | 类型 | 功能
----|---|---
-m_nSearchDepth   |int | AI算法最大搜索深度
-
-
-函数名 | 参数 | 返回值类型 | 功能
----|---|---|---
-PrincipalVariation   | MoveSetting.CHESSMANPOS| void | Alpha-beta 剪枝算法
-SearchAGoodMove   | int[,]| MoveSetting.CHESSMOVE | 调用AI进行下一步棋的计算
+From|ChessPosition|开始的位置
+To|ChessPosition|走到的位置
+FromChessNum|int|开始位置棋子的编号
+ToChessNum|int|走到的位置棋子的编号|
